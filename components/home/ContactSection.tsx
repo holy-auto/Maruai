@@ -87,7 +87,7 @@ export default function ContactSection() {
           <p className="text-foreground-600 text-base md:text-lg max-w-2xl mx-auto mb-6">
             ご相談はどのような事でもお気軽にどうぞ。
             <br />
-            お問い合わせは、３営業日以内に返信させていただきます。
+            お問い合わせは、3営業日以内に返信させていただきます。
           </p>
         </div>
 
