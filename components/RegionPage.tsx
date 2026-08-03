@@ -14,13 +14,12 @@ export async function RegionPage({
   serviceName,
   serviceType,
   slugBase,
-  serviceListLabel,
 }: {
   citySlug: string;
-  serviceName: string; // 例: 外壁塗装
-  serviceType: string; // JSON-LD用
-  slugBase: string; // 例: gaiheki-tosou
-  serviceListLabel: string; // パンくず用サービス名
+  serviceName: string;
+  serviceType: string;
+  slugBase: string;
+  serviceListLabel?: string;
 }) {
   const c = await getCity(citySlug);
   if (!c) notFound();
@@ -33,7 +32,7 @@ export async function RegionPage({
   const nearby = cities.filter((x) => c.nearby.includes(x.slug));
 
   return (
-    <>
+    <main className="relative">
       <JsonLd data={serviceAreaJsonLd(c, { serviceType, slugBase })} />
       <Breadcrumbs
         items={[
@@ -43,48 +42,51 @@ export async function RegionPage({
         ]}
       />
 
-      <section className="hero">
-        <div className="wrap hero-grid">
-          <div>
-            <span className="eyebrow">{c.name}の{serviceName}・屋根塗装</span>
-            <h1>{c.name}で、<br /><span className="brush accent">塗るのはこの職人</span>です。</h1>
-            <p className="lead">{c.name}を含む60分圏内に対応。営業も下請けもいない完全自社施工で、顔の見える職人がご相談から仕上げ・アフターまで担当します。</p>
-            <div className="hero-cta">
-              <a className="btn btn-ember" href={LINE}>LINEで無料相談</a>
-              <a className="btn btn-ghost" href={TEL}>029-886-7913</a>
-            </div>
+      <section className="w-full pt-6 pb-14 md:pb-20 bg-background-50">
+        <div className="w-full px-4 md:px-6 lg:px-8 max-w-4xl mx-auto">
+          <span className="inline-block text-accent-500 text-base font-semibold tracking-widest uppercase mb-2">{c.name}の{serviceName}・屋根塗装</span>
+          <h1 className="font-heading text-3xl md:text-5xl font-bold text-foreground-900 mb-4">{c.name}で、<br /><span className="text-primary-700">塗るのはこの職人</span>です。</h1>
+          <p className="text-base md:text-lg text-foreground-600 leading-relaxed mb-6">{c.name}を含む60分圏内に対応。営業も下請けもいない完全自社施工で、顔の見える職人がご相談から仕上げ・アフターまで担当します。</p>
+          <div className="flex flex-wrap gap-3">
+            <a href={LINE} className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-green-500 text-background-50 font-semibold hover:bg-green-600 transition-colors"><i className="ri-line-fill text-lg"></i>LINEで無料相談</a>
+            <a href={TEL} className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-background-300/60 text-foreground-700 font-medium hover:bg-primary-50 hover:text-primary-700 hover:border-primary-300 transition-colors"><i className="ri-phone-line"></i>029-886-7913</a>
           </div>
-          <div className="hero-visual"><div className="photo-note">［ {c.name}での施工写真 ］</div><div className="hero-badge"><strong>この手が、</strong>お家を守ります。</div></div>
         </div>
       </section>
 
-      <section>
-        <div className="wrap">
-          <div className="sec-head"><span className="eyebrow">{c.name}の塗り替えについて</span><h2 className="mincho">{c.name}で、{serviceName}をお考えの方へ。</h2></div>
-          <p style={{ maxWidth: '62ch', color: 'var(--ink-soft)' }}>{c.intro}</p>
+      <section className="w-full py-14 md:py-20 bg-background-100">
+        <div className="w-full px-4 md:px-6 lg:px-8 max-w-4xl mx-auto">
+          <div className="mb-6">
+            <span className="inline-block text-accent-500 text-base font-semibold tracking-widest uppercase mb-2">{c.name}の塗り替えについて</span>
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground-900">{c.name}で、{serviceName}をお考えの方へ。</h2>
+          </div>
+          <p className="text-base text-foreground-600 leading-relaxed max-w-3xl">{c.intro}</p>
           {c.climate_note && (
-            <p style={{ marginTop: 18, maxWidth: '62ch', color: 'var(--ink-soft)', borderLeft: '3px solid var(--ember)', paddingLeft: 14 }}>{c.climate_note}</p>
+            <p className="mt-5 text-base text-foreground-600 leading-relaxed max-w-3xl border-l-4 border-accent-400 pl-4">{c.climate_note}</p>
           )}
         </div>
       </section>
 
-      <section className="alt">
-        <div className="wrap">
-          <div className="sec-head"><span className="eyebrow">施工事例</span><h2 className="mincho">{c.name}での施工事例</h2></div>
+      <section className="w-full py-14 md:py-20 bg-background-50">
+        <div className="w-full px-4 md:px-6 lg:px-8 max-w-6xl mx-auto">
+          <div className="text-center mb-10">
+            <span className="inline-block text-accent-500 text-base font-semibold tracking-widest uppercase mb-2">Works</span>
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground-900">{c.name}での施工事例</h2>
+          </div>
           {works.length === 0 ? (
-            <p style={{ color: 'var(--ink-soft)' }}>{c.name}での施工事例は準備中です。お問い合わせいただければ、近隣エリアの事例をご紹介します。</p>
+            <p className="text-center text-foreground-500">{c.name}での施工事例は準備中です。お問い合わせいただければ、近隣エリアの事例をご紹介します。</p>
           ) : (
-            <div className="work-grid">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
               {works.map((w) => (
-                <article key={w.id} className="work">
-                  <div className="ba">
-                    {w.before_url ? <Image src={w.before_url} alt={`${c.name} ${w.service} 施工前`} width={400} height={400} /> : <div className="b">BEFORE</div>}
-                    {w.after_url ? <Image src={w.after_url} alt={`${c.name} ${w.service} 施工後`} width={400} height={400} /> : <div className="a">AFTER</div>}
+                <article key={w.id} className="bg-background-100 rounded-xl border border-background-200/70 overflow-hidden">
+                  <div className="grid grid-cols-2 h-40">
+                    {w.before_url ? <Image src={w.before_url} alt={`${c.name} ${w.service} 施工前`} width={400} height={400} className="w-full h-full object-cover" /> : <div className="flex items-center justify-center bg-background-200 text-foreground-400 text-sm">BEFORE</div>}
+                    {w.after_url ? <Image src={w.after_url} alt={`${c.name} ${w.service} 施工後`} width={400} height={400} className="w-full h-full object-cover" /> : <div className="flex items-center justify-center bg-background-300 text-foreground-500 text-sm">AFTER</div>}
                   </div>
-                  <div className="meta">
-                    <span className="tag">{w.service}</span>
-                    <h3 className="mincho">{w.title}</h3>
-                    <p>{[w.paint, w.built_years ? `築${w.built_years}年` : null].filter(Boolean).join('・')}</p>
+                  <div className="p-4">
+                    <span className="px-2.5 py-0.5 rounded-full bg-primary-100 text-primary-700 text-sm font-semibold">{w.service}</span>
+                    <h3 className="font-heading text-lg font-bold text-foreground-900 mt-2 leading-snug">{w.title}</h3>
+                    <p className="text-sm text-foreground-500 mt-1">{[w.paint, w.built_years ? `築${w.built_years}年` : null].filter(Boolean).join('・')}</p>
                   </div>
                 </article>
               ))}
@@ -94,16 +96,19 @@ export async function RegionPage({
       </section>
 
       {voices.length > 0 && (
-        <section>
-          <div className="wrap">
-            <div className="sec-head"><span className="eyebrow">お客様の声</span><h2 className="mincho">{c.name}のお客様の声</h2></div>
-            <div className="voice-grid">
+        <section className="w-full py-14 md:py-20 bg-background-100">
+          <div className="w-full px-4 md:px-6 lg:px-8 max-w-6xl mx-auto">
+            <div className="text-center mb-10">
+              <span className="inline-block text-accent-500 text-base font-semibold tracking-widest uppercase mb-2">Voice</span>
+              <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground-900">{c.name}のお客様の声</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
               {voices.map((v) => (
-                <div key={v.id} className="voice">
-                  <div className="stars">{'★'.repeat(v.rating)}</div>
-                  {v.headline && <div className="q mincho">{v.headline}</div>}
-                  {v.body && <div className="body">{v.body}</div>}
-                  {v.who && <div className="who">{v.who}</div>}
+                <div key={v.id} className="bg-background-50 rounded-xl border border-background-200/70 p-6">
+                  <div className="text-accent-400 tracking-widest mb-3">{'★'.repeat(v.rating)}<span className="text-background-300">{'★'.repeat(Math.max(0, 5 - v.rating))}</span></div>
+                  {v.headline && <h3 className="font-heading text-lg font-bold text-foreground-900 mb-2 leading-snug">{v.headline}</h3>}
+                  {v.body && <p className="text-base text-foreground-600 leading-relaxed">{v.body}</p>}
+                  {v.who && <p className="mt-4 text-sm text-foreground-500">{v.who}</p>}
                 </div>
               ))}
             </div>
@@ -111,43 +116,46 @@ export async function RegionPage({
         </section>
       )}
 
-      <section className="alt">
-        <div className="wrap">
-          <div className="sec-head"><span className="eyebrow">費用の目安</span><h2 className="mincho">{c.name}の{serviceName}の費用</h2></div>
-          <p style={{ color: 'var(--ink-soft)', marginBottom: 18 }}>延床25坪・足場込・税抜で、シリコン塗装75万円〜。坪数とグレードを選ぶと、その場で概算が出せます。</p>
-          <Link className="btn btn-ghost" href="/price">概算シミュレーターを使う →</Link>
+      <section className="w-full py-14 md:py-20 bg-background-50">
+        <div className="w-full px-4 md:px-6 lg:px-8 max-w-4xl mx-auto text-center">
+          <span className="inline-block text-accent-500 text-base font-semibold tracking-widest uppercase mb-2">Price</span>
+          <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground-900 mb-3">{c.name}の{serviceName}の費用</h2>
+          <p className="text-base text-foreground-600 leading-relaxed mb-6">延床25坪・足場込・税抜で、シリコン塗装75万円〜。坪数とグレードを選ぶと、その場で概算が出せます。</p>
+          <Link href="/price" className="inline-flex items-center gap-1.5 px-8 py-3.5 rounded-full bg-primary-500 text-background-50 font-semibold hover:bg-primary-600 transition-colors">概算シミュレーターを使う<i className="ri-arrow-right-line"></i></Link>
         </div>
       </section>
 
       {nearby.length > 0 && (
-        <section>
-          <div className="wrap">
-            <div className="sec-head"><span className="eyebrow">対応エリア</span><h2 className="mincho">近隣の対応エリア</h2></div>
-            <div className="area-list">
+        <section className="w-full py-14 md:py-20 bg-background-100">
+          <div className="w-full px-4 md:px-6 lg:px-8 max-w-4xl mx-auto">
+            <div className="text-center mb-8">
+              <span className="inline-block text-accent-500 text-base font-semibold tracking-widest uppercase mb-2">Area</span>
+              <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground-900">近隣の対応エリア</h2>
+            </div>
+            <div className="flex flex-wrap gap-2 justify-center">
               {nearby.map((n) => (
-                <Link key={n.slug} href={`/${slugBase}/${n.slug}`}><span>{n.name}の{serviceName}</span></Link>
+                <Link key={n.slug} href={`/${slugBase}/${n.slug}`} className="px-4 py-2 rounded-full bg-background-50 border border-background-200/70 text-base text-foreground-700 hover:border-primary-300 hover:text-primary-700 transition-colors">{n.name}の{serviceName}</Link>
               ))}
             </div>
           </div>
         </section>
       )}
 
-      <section className="cta">
-        <div className="wrap">
-          <h2 className="mincho">{c.name}で、もう一社お見積りを。</h2>
-          <p>診断もお見積りも無料です。比べていただいて構いません。</p>
-          <div className="cta-row">
-            <a className="btn btn-line" href={LINE}>LINEで相談する</a>
-            <a className="btn btn-white" href={TEL}>029-886-7913 に電話</a>
+      <section className="w-full py-14 md:py-20 bg-primary-700 text-background-50">
+        <div className="w-full px-4 md:px-6 lg:px-8 max-w-3xl mx-auto text-center">
+          <h2 className="font-heading text-2xl md:text-3xl font-bold mb-3">{c.name}で、もう一社お見積りを。</h2>
+          <p className="text-background-100/85 mb-6">診断もお見積りも無料です。比べていただいて構いません。</p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a href={LINE} className="px-8 py-3.5 rounded-full bg-green-500 text-background-50 font-semibold hover:bg-green-600 transition-colors">LINEで相談する</a>
+            <a href={TEL} className="px-8 py-3.5 rounded-full bg-background-50 text-primary-700 font-semibold hover:bg-background-100 transition-colors">029-886-7913 に電話</a>
           </div>
         </div>
       </section>
-    </>
+    </main>
   );
 }
 
-// 共通：generateStaticParams（全市町）
 export async function regionStaticParams() {
-  const cities = await getCities();
+  const cities = await getCities().catch(() => []);
   return cities.map((c) => ({ city: c.slug }));
 }
