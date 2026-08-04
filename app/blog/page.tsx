@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getPosts } from '@/lib/content';
+import { PageHero } from '@/components/site/PageHero';
 
 export const revalidate = 3600;
 
@@ -13,25 +14,25 @@ export const metadata: Metadata = {
 export default async function BlogPage() {
   const posts = await getPosts().catch(() => []);
   return (
-    <>
-      <div className="page-hero"><div className="wrap"><span className="eyebrow">お役立ちコラム</span><h1 className="mincho">塗り替え前に、知っておきたいこと。</h1></div></div>
-      <section>
-        <div className="wrap" style={{ maxWidth: 760 }}>
+    <main className="relative">
+      <PageHero eyebrow="Column" title="塗り替え前に、知っておきたいこと。" />
+      <section className="w-full py-14 md:py-20 bg-background-50">
+        <div className="w-full px-4 md:px-6 lg:px-8 max-w-3xl mx-auto">
           {posts.length === 0 ? (
-            <p style={{ color: 'var(--ink-soft)' }}>記事は準備中です。</p>
+            <p className="text-center text-foreground-500">記事は準備中です。</p>
           ) : (
-            <div style={{ display: 'grid', gap: 18 }}>
+            <div className="grid gap-4">
               {posts.map((p) => (
-                <Link key={p.slug} href={`/blog/${p.slug}`} className="extra-card" style={{ display: 'block' }}>
-                  <p style={{ fontSize: '.78rem', color: 'var(--slate)' }}>{new Date(p.published_at).toLocaleDateString('ja-JP')}</p>
-                  <h2 className="mincho" style={{ fontSize: '1.2rem', margin: '.2em 0' }}>{p.title}</h2>
-                  {p.excerpt && <p style={{ fontSize: '.88rem', color: 'var(--ink-soft)' }}>{p.excerpt}</p>}
+                <Link key={p.slug} href={`/blog/${p.slug}`} className="block bg-background-100 rounded-xl border border-background-200/70 p-6 hover:border-primary-300 transition-colors">
+                  <p className="text-sm text-foreground-500">{new Date(p.published_at).toLocaleDateString('ja-JP')}</p>
+                  <h2 className="font-heading text-lg md:text-xl font-bold text-foreground-900 my-1">{p.title}</h2>
+                  {p.excerpt && <p className="text-base text-foreground-600 leading-relaxed">{p.excerpt}</p>}
                 </Link>
               ))}
             </div>
           )}
         </div>
       </section>
-    </>
+    </main>
   );
 }

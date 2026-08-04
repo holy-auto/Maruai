@@ -39,16 +39,16 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
   };
 
   return (
-    <>
+    <main className="relative">
       <JsonLd data={articleJsonLd} />
       <Breadcrumbs items={[{ name: 'ホーム', url: '/' }, { name: 'コラム', url: '/blog' }, { name: p.title, url: `/blog/${slug}` }]} />
-      <article className="section">
-        <div className="wrap" style={{ maxWidth: 720 }}>
-          <p style={{ fontSize: '.8rem', color: 'var(--slate)' }}>{new Date(p.published_at).toLocaleDateString('ja-JP')}</p>
-          <h1 className="mincho" style={{ fontSize: 'clamp(1.6rem,4vw,2.3rem)', margin: '.3em 0 1em' }}>{p.title}</h1>
-          <div style={{ color: 'var(--ink-soft)', lineHeight: 1.95, whiteSpace: 'pre-wrap' }}>{p.body}</div>
+      <article className="w-full py-10 md:py-14 bg-background-50">
+        <div className="w-full px-4 md:px-6 lg:px-8 max-w-3xl mx-auto">
+          <p className="text-sm text-foreground-500">{new Date(p.published_at).toLocaleDateString('ja-JP')}</p>
+          <h1 className="font-heading text-3xl md:text-4xl font-bold text-foreground-900 mt-2 mb-8">{p.title}</h1>
+          <div className="text-base text-foreground-700 leading-loose whitespace-pre-wrap">{p.body}</div>
         </div>
       </article>
-    </>
+    </main>
   );
 }

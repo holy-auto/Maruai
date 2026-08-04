@@ -1,50 +1,70 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { getWork, getAllWorkIds } from '@/lib/content';
-import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { examples } from '@/lib/examples';
+import { JsonLd } from '@/components/JsonLd';
+import { SITE, breadcrumbJsonLd } from '@/lib/seo';
+import ExampleDetail from '@/components/examples/ExampleDetail';
+import ExamplesCTA from '@/components/examples/ExamplesCTA';
 
-export const revalidate = 3600;
-
-export async function generateStaticParams() {
-  const ids = await getAllWorkIds().catch(() => []);
-  return ids.map((id) => ({ id: String(id) }));
+export function generateStaticParams() {
+  return examples.map((ex) => ({ id: ex.id }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
   const { id } = await params;
-  const w = await getWork(Number(id));
-  if (!w) return {};
-  const sub = [w.paint, w.built_years ? `築${w.built_years}年` : null].filter(Boolean).join('・');
+  const ex = examples.find((e) => e.id === id);
+  if (!ex) return {};
   return {
-    title: `${w.title}｜施工事例`,
-    description: `${w.title}（${w.service}${sub ? '・' + sub : ''}）の施工事例。茨城県阿見町の丸愛装業による完全自社施工。`,
+    title: `${ex.title}｜施工事例`,
+    description: `${ex.title}（${ex.category}・${ex.location}・${ex.area}）。${ex.description}`,
     alternates: { canonical: `/works/${id}` },
+    openGraph: { images: [ex.afterImage] },
   };
 }
 
-export default async function WorkDetail({ params }: { params: Promise<{ id: string }> }) {
+export default async function WorkDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
-  const w = await getWork(Number(id));
-  if (!w) notFound();
+  const example = examples.find((e) => e.id === id);
+  if (!example) notFound();
+
+  const related = examples
+    .filter((e) => e.id !== example.id && e.category === example.category)
+    .slice(0, 3);
+
+  const pageUrl = `${SITE}/works/${example.id}`;
+
+  const articleLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: example.title,
+    description: example.description,
+    image: example.afterImage,
+    url: pageUrl,
+    author: { '@type': 'Organization', name: '株式会社 丸愛装業' },
+    publisher: { '@type': 'Organization', name: '株式会社 丸愛装業' },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl },
+  };
 
   return (
-    <>
-      <Breadcrumbs items={[{ name: 'ホーム', url: '/' }, { name: '施工事例', url: '/works' }, { name: w.title, url: `/works/${id}` }]} />
-      <section className="section">
-        <div className="wrap" style={{ maxWidth: 880 }}>
-          <span className="eyebrow">{w.service}</span>
-          <h1 className="mincho" style={{ fontSize: 'clamp(1.6rem,4vw,2.3rem)', margin: '.4em 0 .6em' }}>{w.title}</h1>
-          <p style={{ color: 'var(--slate)', marginBottom: 24 }}>{[w.paint, w.built_years ? `築${w.built_years}年` : null].filter(Boolean).join('・')}</p>
-          <div className="work" style={{ marginBottom: 24 }}>
-            <div className="ba">
-              {w.before_url ? <Image src={w.before_url} alt={`${w.title} 施工前`} width={600} height={600} /> : <div className="b">BEFORE</div>}
-              {w.after_url ? <Image src={w.after_url} alt={`${w.title} 施工後`} width={600} height={600} /> : <div className="a">AFTER</div>}
-            </div>
-          </div>
-          {w.body && <p style={{ color: 'var(--ink-soft)', lineHeight: 1.9 }}>{w.body}</p>}
-        </div>
-      </section>
-    </>
+    <main className="relative scroll-smooth">
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: 'ホーム', url: '/' },
+          { name: '施工事例', url: '/works' },
+          { name: example.title, url: `/works/${example.id}` },
+        ])}
+      />
+      <JsonLd data={articleLd} />
+      <ExampleDetail example={example} related={related} />
+      <ExamplesCTA />
+    </main>
   );
 }
