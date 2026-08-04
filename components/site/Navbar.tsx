@@ -26,6 +26,16 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // ハッシュ対象が描画されるまで数回リトライしてからスクロール（クライアント遷移の速度差に依存しないため）
+  const scrollToHash = (hash: string, attempts = 0) => {
+    const el = document.querySelector(hash);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    } else if (attempts < 25) {
+      setTimeout(() => scrollToHash(hash, attempts + 1), 100);
+    }
+  };
+
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMobileOpen(false);
@@ -37,13 +47,9 @@ export function Navbar() {
       const hash = href.substring(1); // "#xxx"
       if (pathname !== "/") {
         router.push("/");
-        setTimeout(() => {
-          const el = document.querySelector(hash);
-          if (el) el.scrollIntoView({ behavior: "smooth" });
-        }, 200);
+        scrollToHash(hash);
       } else {
-        const el = document.querySelector(hash);
-        if (el) el.scrollIntoView({ behavior: "smooth" });
+        scrollToHash(hash);
       }
     } else {
       router.push(href);

@@ -1,6 +1,10 @@
 'use client';
 import { useState, useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { updateSimulationEstimate } from "@/hooks/useSimulationEstimate";
+
+// 足場代など面積に依存しない固定費（万円）。坪数で割り引かないよう分離する。
+const BASE_FIXED = 15;
 
 const basePrices: Record<string, number> = {
   urethane: 65,
@@ -38,10 +42,13 @@ function calculateEstimate(
   const surchargeTotal = partsOptions.reduce((sum, p) => {
     return sum + (selectedParts[p.key] ? p.surcharge : 0);
   }, 0);
-  return Math.round(base * areaRatio * (1 + surchargeTotal));
+  // 固定費（足場代等）は坪数で減らさず、面積依存分のみスケールする。25坪で base に一致。
+  const areaCost = BASE_FIXED + (base - BASE_FIXED) * areaRatio;
+  return Math.round(areaCost * (1 + surchargeTotal));
 }
 
 export default function SimulationSection() {
+  const router = useRouter();
   const [tsubo, setTsubo] = useState<number>(25);
   const [plan, setPlan] = useState<string>("silicon");
   const [selectedParts, setSelectedParts] = useState<Record<PartsKey, boolean>>({
@@ -77,16 +84,23 @@ export default function SimulationSection() {
   };
 
   const handleRequestEstimate = () => {
+    const partsText = getSelectedPartsText();
+    const estimateText = `${estimate}万円（${tsubo}坪・${planOptions.find((p) => p.key === plan)?.name}${partsText}）`;
     const contactForm = document.querySelector("#contact");
     if (contactForm) {
       contactForm.scrollIntoView({ behavior: "smooth" });
       setTimeout(() => {
         const estimateInput = document.getElementById("estimate-field") as HTMLInputElement | null;
-        if (estimateInput) {
-          const partsText = getSelectedPartsText();
-          estimateInput.value = `${estimate}万円（${tsubo}坪・${planOptions.find((p) => p.key === plan)?.name}${partsText}）`;
-        }
+        if (estimateInput) estimateInput.value = estimateText;
       }, 800);
+    } else {
+      // お問い合わせセクションが無いページ（/price 等）ではトップの問い合わせへ遷移し、概算を引き継ぐ
+      try {
+        sessionStorage.setItem("maruai-estimate", estimateText);
+      } catch {
+        /* ストレージ不可でも遷移は行う */
+      }
+      router.push("/#contact");
     }
   };
 
@@ -127,13 +141,13 @@ export default function SimulationSection() {
             </h3>
             <div className="px-2 py-4">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-base font-bold text-foreground-700">1坪</span>
+                <span className="text-base font-bold text-foreground-700">10坪</span>
                 <span className="text-4xl font-heading font-bold text-primary-600">{tsubo}坪</span>
                 <span className="text-base font-bold text-foreground-700">100坪</span>
               </div>
               <input
                 type="range"
-                min={1}
+                min={10}
                 max={100}
                 step={1}
                 value={tsubo}
@@ -142,11 +156,11 @@ export default function SimulationSection() {
                 style={{ accentColor: 'var(--accent-color, #15803d)' }}
               />
               <div className="flex justify-between mt-2 px-1">
-                <span className="text-xs text-foreground-400">1</span>
-                <span className="text-xs text-foreground-400">20</span>
-                <span className="text-xs text-foreground-400">40</span>
-                <span className="text-xs text-foreground-400">60</span>
-                <span className="text-xs text-foreground-400">80</span>
+                <span className="text-xs text-foreground-400">10</span>
+                <span className="text-xs text-foreground-400">30</span>
+                <span className="text-xs text-foreground-400">50</span>
+                <span className="text-xs text-foreground-400">70</span>
+                <span className="text-xs text-foreground-400">90</span>
                 <span className="text-xs text-foreground-400">100</span>
               </div>
             </div>

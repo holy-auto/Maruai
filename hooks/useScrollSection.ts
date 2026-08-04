@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 const SECTION_IDS = ["top", "service", "moneyflow", "simulation", "reason", "message", "company", "contact"];
 
 export function useScrollSection(): string | null {
+  const pathname = usePathname();
   const [activeSection, setActiveSection] = useState<string | null>(null);
 
   useEffect(() => {
+    // ルート変更時に監視対象を貼り直す（セクションを持たないページから戻ったときも再検知するため）
+    setActiveSection(null);
     const visibilityMap = new Map<string, number>();
     const observers: IntersectionObserver[] = [];
 
@@ -39,7 +43,7 @@ export function useScrollSection(): string | null {
     return () => {
       observers.forEach((o) => o.disconnect());
     };
-  }, []);
+  }, [pathname]);
 
   return activeSection;
 }

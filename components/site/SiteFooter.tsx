@@ -23,15 +23,17 @@ export function SiteFooter() {
             <h4 className="font-heading font-bold text-base text-background-100 mb-3">
               サイトマップ
             </h4>
-            <ul className="space-y-2">
+            <ul className="grid grid-cols-2 gap-x-4 gap-y-2">
               {[
                 { label: "HOME", href: "/" },
-                { label: "施工内容", href: "/#service" },
-                { label: "料金シミュレーション", href: "/#simulation" },
+                { label: "サービス", href: "/services" },
+                { label: "料金", href: "/price" },
                 { label: "施工事例", href: "/works" },
-                { label: "代表挨拶", href: "/#message" },
-                { label: "会社概要", href: "/#company" },
-                { label: "お問い合わせ", href: "/#contact" },
+                { label: "お客様の声", href: "/voice" },
+                { label: "よくある質問", href: "/faq" },
+                { label: "コラム", href: "/blog" },
+                { label: "会社概要", href: "/company" },
+                { label: "お問い合わせ", href: "/contact" },
               ].map((link) => (
                 <li key={link.href}>
                   <a

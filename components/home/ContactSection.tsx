@@ -24,6 +24,21 @@ export default function ContactSection() {
     return () => observer.disconnect();
   }, []);
 
+  // /price など別ページのシミュレーターから引き継いだ概算をフォームに反映する
+  useEffect(() => {
+    let saved: string | null = null;
+    try {
+      saved = sessionStorage.getItem("maruai-estimate");
+      if (saved) sessionStorage.removeItem("maruai-estimate");
+    } catch {
+      /* ストレージ不可の場合は何もしない */
+    }
+    if (!saved) return;
+    const estimateInput = document.getElementById("estimate-field") as HTMLInputElement | null;
+    if (estimateInput) estimateInput.value = saved;
+    sectionRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
