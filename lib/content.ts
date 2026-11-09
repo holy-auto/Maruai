@@ -1,5 +1,6 @@
 // lib/content.ts
 import { supabase } from './supabase';
+import type { Example } from './examples';
 
 export type City = {
   slug: string;
@@ -9,17 +10,47 @@ export type City = {
   nearby: string[];
 };
 
+// works テーブル（施工事例）。新デザイン（Example）で使う列を主とし、
+// region ページ（RegionPage）が参照する旧スキーマ列は任意として互換を保つ。
 export type Work = {
   id: number;
-  city_slug: string | null;
+  created_at?: string;
+  published?: boolean;
+  sort?: number;
+  category: string;
   title: string;
-  service: string;
-  paint: string | null;
-  built_years: number | null;
+  location: string;
+  area: string;
+  period: string;
+  description: string;
   before_url: string | null;
   after_url: string | null;
-  body: string | null;
+  features: string[];
+  testimonial: string;
+  // --- 旧スキーマ互換（存在しない環境では undefined になる） ---
+  city_slug?: string | null;
+  service?: string;
+  paint?: string | null;
+  built_years?: number | null;
+  body?: string | null;
 };
+
+// Work 行を、施工事例コンポーネントが扱う Example 形状に変換する。
+export function workToExample(w: Work): Example {
+  return {
+    id: String(w.id),
+    category: w.category ?? '',
+    title: w.title,
+    location: w.location ?? '',
+    area: w.area ?? '',
+    period: w.period ?? '',
+    description: w.description ?? '',
+    beforeImage: w.before_url ?? '',
+    afterImage: w.after_url ?? '',
+    features: w.features ?? [],
+    testimonial: w.testimonial ?? '',
+  };
+}
 
 export type Voice = {
   id: number;
@@ -60,8 +91,18 @@ export async function getRecentWorks(limit = 6): Promise<Work[]> {
   const { data } = await supabase
     .from('works')
     .select('*')
+    .order('sort', { ascending: true })
     .order('created_at', { ascending: false })
     .limit(limit);
+  return data ?? [];
+}
+// 施工事例一覧（公開分すべて）。RLS で published のみ返る。
+export async function getWorks(): Promise<Work[]> {
+  const { data } = await supabase
+    .from('works')
+    .select('*')
+    .order('sort', { ascending: true })
+    .order('created_at', { ascending: false });
   return data ?? [];
 }
 export async function getWork(id: number): Promise<Work | null> {

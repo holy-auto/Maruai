@@ -1,13 +1,16 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { examples } from '@/lib/examples';
+import { getWork, getWorks, getAllWorkIds, workToExample } from '@/lib/content';
 import { JsonLd } from '@/components/JsonLd';
 import { SITE, breadcrumbJsonLd } from '@/lib/seo';
 import ExampleDetail from '@/components/examples/ExampleDetail';
 import ExamplesCTA from '@/components/examples/ExamplesCTA';
 
-export function generateStaticParams() {
-  return examples.map((ex) => ({ id: ex.id }));
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const ids = await getAllWorkIds().catch(() => []);
+  return ids.map((id) => ({ id: String(id) }));
 }
 
 export async function generateMetadata({
@@ -16,13 +19,14 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const ex = examples.find((e) => e.id === id);
-  if (!ex) return {};
+  const w = await getWork(Number(id));
+  if (!w) return {};
+  const ex = workToExample(w);
   return {
     title: `${ex.title}｜施工事例`,
     description: `${ex.title}（${ex.category}・${ex.location}・${ex.area}）。${ex.description}`,
     alternates: { canonical: `/works/${id}` },
-    openGraph: { images: [ex.afterImage] },
+    openGraph: ex.afterImage ? { images: [ex.afterImage] } : undefined,
   };
 }
 
@@ -32,10 +36,14 @@ export default async function WorkDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const example = examples.find((e) => e.id === id);
-  if (!example) notFound();
+  const w = await getWork(Number(id));
+  if (!w) notFound();
 
-  const related = examples
+  const example = workToExample(w);
+
+  const all = await getWorks().catch(() => []);
+  const related = all
+    .map(workToExample)
     .filter((e) => e.id !== example.id && e.category === example.category)
     .slice(0, 3);
 

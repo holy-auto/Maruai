@@ -1,5 +1,6 @@
 'use client';
 import { useState, useRef, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 
 export default function ContactSection() {
   const [submitted, setSubmitted] = useState(false);
@@ -51,29 +52,30 @@ export default function ContactSection() {
     }
 
     const formData = new FormData(form);
-    const data = new URLSearchParams();
-    formData.forEach((value, key) => {
-      data.append(key, String(value));
-    });
+    const name = String(formData.get("name") ?? "").trim();
+    const email = String(formData.get("email") ?? "").trim();
+    const phone = String(formData.get("phone") ?? "").trim();
+    const estimate = String(formData.get("estimate") ?? "").trim();
+    const message = String(formData.get("message") ?? "").trim();
 
     try {
-      const response = await fetch("https://readdy.ai/api/form/d8kgf43sisn5c04b3ih0", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: data.toString(),
+      const { error: insertError } = await supabase.from("contact_submissions").insert({
+        source: "home",
+        name,
+        email,
+        message,
+        payload: { phone, estimate },
       });
 
-      if (response.ok) {
+      if (!insertError) {
         setSubmitted(true);
         form.reset();
         setCharCount(0);
       } else {
-        setError("送信に失敗しました。時間をおいて再度お試しください。");
+        setError("送信に失敗しました。お手数ですがお電話・LINEでのお問い合わせをご検討ください。");
       }
     } catch {
-      setError("送信に失敗しました。電話でのお問い合わせをご検討ください。");
+      setError("送信に失敗しました。お手数ですがお電話・LINEでのお問い合わせをご検討ください。");
     } finally {
       setSending(false);
     }
@@ -188,7 +190,6 @@ export default function ContactSection() {
                 ref={formRef}
                 onSubmit={handleSubmit}
                 className="space-y-4"
-                data-readdy-form
               >
                 <div>
                   <label

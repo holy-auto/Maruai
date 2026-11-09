@@ -1,9 +1,13 @@
 import type { Metadata } from 'next';
 import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbJsonLd } from '@/lib/seo';
+import { getWorks, workToExample } from '@/lib/content';
+import { exampleCategories } from '@/lib/examples';
 import ExamplesHero from '@/components/examples/ExamplesHero';
 import ExampleGrid from '@/components/examples/ExampleGrid';
 import ExamplesCTA from '@/components/examples/ExamplesCTA';
+
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: '施工事例',
@@ -12,7 +16,15 @@ export const metadata: Metadata = {
   alternates: { canonical: '/works' },
 };
 
-export default function WorksPage() {
+export default async function WorksPage() {
+  const works = await getWorks().catch(() => []);
+  const examples = works.map(workToExample);
+
+  // 実在カテゴリを集計してフィルタタブに使う（データが無ければ既定リストにフォールバック）
+  const present = Array.from(new Set(examples.map((e) => e.category))).filter(Boolean);
+  const categories =
+    present.length > 0 ? ['すべて', ...present] : exampleCategories;
+
   return (
     <main className="relative scroll-smooth">
       <JsonLd
@@ -22,7 +34,7 @@ export default function WorksPage() {
         ])}
       />
       <ExamplesHero />
-      <ExampleGrid />
+      <ExampleGrid examples={examples} categories={categories} />
       <ExamplesCTA />
     </main>
   );

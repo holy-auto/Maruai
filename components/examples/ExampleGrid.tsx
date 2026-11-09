@@ -1,20 +1,16 @@
 'use client';
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { examples } from "@/lib/examples";
+import type { Example } from "@/lib/examples";
 
-const commonCategories = [
-  "すべて",
-  "外壁塗装",
-  "屋根塗装",
-  "コーキング・外壁塗装",
-  "防水工事・外壁塗装",
-  "外壁・屋根塗装",
-  "屋根塗装・コーキング",
-  "外壁塗装・防水工事",
-];
-
-export default function ExampleGrid() {
+export default function ExampleGrid({
+  examples,
+  categories,
+}: {
+  examples: Example[];
+  categories: string[];
+}) {
+  const commonCategories = categories;
   const [activeCategory, setActiveCategory] = useState("すべて");
   const [visibleCount, setVisibleCount] = useState(6);
   const [currentSlide, setCurrentSlide] = useState<Record<string, "before" | "after">>(() => {
@@ -89,7 +85,7 @@ export default function ExampleGrid() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
           {displayedExamples.map((example) => {
-            const CardWrapper = ({ example: ex }: { example: typeof examples[0] }) => {
+            const CardWrapper = ({ example: ex }: { example: Example }) => {
               const [visible, setVisible] = useState(false);
               const ref = useRef<HTMLDivElement>(null);
 
@@ -216,5 +212,3 @@ export default function ExampleGrid() {
     </section>
   );
 }
-
-export { commonCategories };

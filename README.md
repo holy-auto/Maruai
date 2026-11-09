@@ -11,7 +11,7 @@ UIは Tailwind CSS（OKLCH カラートークン：`primary` / `accent` / `secon
 - 設定：`tailwind.config.ts` / `postcss.config.mjs` / `app/globals.css`（トークン定義）
 - 共通チロム：`components/site/Navbar.tsx`・`SiteFooter.tsx`・`PageHero.tsx`
 - トップ各セクション：`components/home/*`
-- 施工事例：`components/examples/*`（データは現状 `lib/examples.ts` のモック。Supabase 連携に差し替え可）
+- 施工事例：`components/examples/*`（データは Supabase の `works` テーブルから取得。`lib/examples.ts` は Example 型定義のみ）
 
 ## セットアップ
 
@@ -26,7 +26,8 @@ npm run dev
 - `NEXT_PUBLIC_SITE_URL`（本番ドメイン。メタ・OGP・sitemap・JSON-LDの絶対URLに使用）
 
 ### 2. データベース
-`supabase/schema.sql` を Supabase の SQL Editor で実行。テーブル・RLS・阿見町シードまで入ります。
+`supabase/schema.sql` を Supabase の SQL Editor で実行。テーブル・RLS が入ります。
+施工事例（`works`）は id 1〜9 を初期投入済み。問い合わせは `contact_submissions`（source: home=トップ / contact=問い合わせページ）に保存されます。
 
 ### 3. 画像
 `next.config.ts` の `images.remotePatterns` を自分の Supabase Storage ホストに。
@@ -60,9 +61,9 @@ OGP用に `public/ogp.jpg`（1200×630）、`public/logo.png` を配置。
 - `lib/seo.ts` の geo 座標（GBPの正確なピン）
 - 写真（ヒーロー・サービス・施工事例・代表）— 現状 `readdy.ai` の外部URLを参照。自社ホスト画像へ差し替え推奨
 - まるあいくんの画像（`lib/maruai.ts` の `MARUAI_IMAGES` — 現状 `public.readdy.ai` を参照）
-- `lib/examples.ts` の施工事例モックデータ（Supabase の `works` 連携に置き換え可能）
+- 施工事例（Supabase `works` テーブル。初期の id 1〜9 は内容・画像URLの差し替え推奨）
 - `lib/faq.ts` の支払い方法の回答
-- トップの問い合わせフォーム送信先（`components/home/ContactSection.tsx` は Readdy Forms、`/contact` は Supabase `inquiries`）
+- 問い合わせフォームの送信先はトップ・`/contact` とも Supabase `contact_submissions` に統一済み
 
 ## デプロイ
 Vercel に接続し、環境変数を設定して push するだけ。ISR（`revalidate=3600`）で事例追加もビルド不要で反映。

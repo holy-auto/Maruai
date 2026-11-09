@@ -15,7 +15,13 @@ export function ContactForm() {
       return;
     }
     setState('sending');
-    const { error } = await supabase.from('inquiries').insert(form);
+    const { error } = await supabase.from('contact_submissions').insert({
+      source: 'contact',
+      name: form.name,
+      email: form.email,
+      message: form.body,
+      payload: { tel: form.tel },
+    });
     setState(error ? 'error' : 'done');
   }
 
@@ -58,7 +64,7 @@ export function ContactForm() {
         {state === 'sending' ? <><i className="ri-loader-4-line animate-spin"></i>送信中…</> : <><i className="ri-send-plane-line"></i>この内容で送信する</>}
       </button>
       {state === 'error' && <p className="text-base text-red-600">送信に失敗しました。お手数ですがお電話・LINEをご利用ください。</p>}
-      <p className="text-sm text-foreground-500">※ 送信には Supabase に inquiries テーブル（INSERT許可のRLS）が必要です。未設定ならLINE・電話が確実です。</p>
+      <p className="text-sm text-foreground-500">※ 送信内容は Supabase の contact_submissions テーブルに保存されます。環境変数が未設定の場合はLINE・電話が確実です。</p>
     </div>
   );
 }

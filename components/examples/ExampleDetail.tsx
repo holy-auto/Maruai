@@ -2,9 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { examples } from "@/lib/examples";
-
-type Example = (typeof examples)[number];
+import type { Example } from "@/lib/examples";
 
 export default function ExampleDetail({
   example,
