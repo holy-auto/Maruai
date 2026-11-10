@@ -99,8 +99,8 @@ export default function HeroSection() {
       <div className="absolute inset-0 overflow-hidden">
         <img
           ref={imgRef}
-          src="https://readdy.ai/api/search-image?query=Beautiful%20modern%20Japanese%20house%20exterior%20with%20fresh%20paint%20after%20renovation%2C%20warm%20sunlight%2C%20clean%20blue%20sky%2C%20well-maintained%20residential%20street%20in%20Japan%2C%20professional%20photography%2C%20high%20quality%2C%20serene%20atmosphere%2C%20green%20garden%20and%20trees&width=1600&height=900&seq=maruai-hero-01&orientation=landscape"
-          alt="茨城県阿見町 外壁塗装・屋根塗装の施工事例 きれいに塗装された戸建て住宅"
+          src="/images/hero.jpg"
+          alt="青空の下に並ぶ住宅街のイメージ"
           title="阿見町の外壁塗装・屋根塗装専門店 丸愛装業"
           className="w-full h-[120%] object-cover"
           loading="eager"
