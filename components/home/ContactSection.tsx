@@ -281,6 +281,12 @@ export default function ContactSection() {
                   </p>
                 </div>
 
+                <p className="text-sm text-foreground-500">
+                  送信いただいた内容は
+                  <a href="/privacy" target="_blank" rel="noopener" className="text-primary-700 underline underline-offset-2 hover:text-primary-800">プライバシーポリシー</a>
+                  に従って取り扱います。内容をご確認のうえ送信してください。
+                </p>
+
                 {error && (
                   <div className="p-3 bg-red-50 rounded-lg border border-red-200/50">
                     <p className="text-base text-red-700">{error}</p>

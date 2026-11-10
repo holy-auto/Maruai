@@ -55,6 +55,11 @@ export function ContactForm() {
         <label className="block text-base font-semibold text-foreground-700 mb-1">お問い合わせ内容</label>
         <textarea rows={5} className={`${inputClass} resize-none`} value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })} placeholder="築年数・お住まいエリア・気になる症状などをお書きください" />
       </div>
+      <p className="text-sm text-foreground-500">
+        送信いただいた内容は
+        <a href="/privacy" target="_blank" rel="noopener" className="text-primary-700 underline underline-offset-2 hover:text-primary-800">プライバシーポリシー</a>
+        に従って取り扱います。内容をご確認のうえ送信してください。
+      </p>
       <button
         type="button"
         onClick={submit}

@@ -4,7 +4,7 @@ import { SITE } from '@/lib/seo';
 import { SERVICE_LIST } from '@/lib/services';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const staticPaths = ['', '/services', '/works', '/price', '/voice', '/company', '/faq', '/contact', '/blog'];
+  const staticPaths = ['', '/services', '/works', '/price', '/voice', '/company', '/faq', '/contact', '/blog', '/privacy'];
 
   const [cities, postSlugs, workIds] = await Promise.all([
     getCities().catch(() => []),

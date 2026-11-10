@@ -86,7 +86,12 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-10 pt-6 border-t border-background-700/50 text-center">
+        <div className="mt-10 pt-6 border-t border-background-700/50 text-center space-y-2">
+          <p className="text-sm">
+            <a href="/privacy" className="text-background-300 hover:text-background-50 underline-offset-4 hover:underline">
+              プライバシーポリシー
+            </a>
+          </p>
           <p className="text-sm text-background-500">
             © 2026 株式会社 丸愛装業 All Rights Reserved.
           </p>
