@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { FAQS } from '@/lib/faq';
 import { JsonLd } from '@/components/JsonLd';
 import { faqJsonLd } from '@/lib/seo';
+import { PageHero } from '@/components/site/PageHero';
 
 export const metadata: Metadata = {
   title: 'よくある質問',
@@ -9,21 +10,30 @@ export const metadata: Metadata = {
   alternates: { canonical: '/faq' },
 };
 
+// 構成：Banner → Rows（質問を1〜5列、答えを6〜12列。行の間は細い罫。答えは常に見える）
 export default function FaqPage() {
   return (
-    <>
+    <main className="relative">
       <JsonLd data={faqJsonLd(FAQS)} />
-      <div className="page-hero"><div className="wrap"><span className="eyebrow">ご相談の前に</span><h1 className="mincho">よくある質問</h1><p>お問い合わせの前に、よくいただくご質問をまとめました。</p></div></div>
-      <section>
-        <div className="wrap faq">
-          {FAQS.map((f) => (
-            <details key={f.q}>
-              <summary>{f.q}</summary>
-              <div className="ans">{f.a}</div>
-            </details>
-          ))}
+      <PageHero
+        title="よくある質問"
+        description="お問い合わせの前に、よくいただくご質問をまとめました。"
+      />
+      <section className="bg-paper pb-[calc(var(--section-gap-l)/2)]">
+        <div className="container">
+          <dl className="border-b border-paper-3">
+            {FAQS.map((f) => (
+              <div
+                key={f.q}
+                className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-3 py-8 border-t border-paper-3 first:border-t-0"
+              >
+                <dt className="md:col-span-5 font-display font-bold text-title text-ink">{f.q}</dt>
+                <dd className="md:col-span-7 text-base text-ink-2 max-w-[38em]">{f.a}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </section>
-    </>
+    </main>
   );
 }

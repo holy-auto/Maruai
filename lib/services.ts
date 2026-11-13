@@ -7,6 +7,7 @@ export type Service = {
   symptoms: string[];
   priceFrom: string;
   metaDescription: string;
+  image?: string; // 実際の施工写真のパス（例: /images/services/gaiheki.jpg）。指定すると写真を表示
 };
 
 export const SERVICES: Record<string, Service> = {
