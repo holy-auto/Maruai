@@ -52,13 +52,17 @@ export function workToExample(w: Work): Example {
   };
 }
 
+// voices テーブル（お客様の声）。published=true（掲載許可済み）の行だけが RLS で公開される。
 export type Voice = {
   id: number;
+  created_at?: string;
   city_slug: string | null;
   rating: number;
   headline: string | null;
   body: string | null;
-  who: string | null;
+  who: string | null; // 例: 阿見町・60代・男性
+  service?: string | null; // 例: 外壁塗装
+  work_id?: number | null; // 関連する施工事例（works.id）
 };
 
 export type Post = {
@@ -120,7 +124,11 @@ export async function getVoicesByCity(slug: string): Promise<Voice[]> {
   return data ?? [];
 }
 export async function getAllVoices(): Promise<Voice[]> {
-  const { data } = await supabase.from('voices').select('*').order('created_at', { ascending: false });
+  const { data } = await supabase
+    .from('voices')
+    .select('*')
+    .order('sort', { ascending: true })
+    .order('created_at', { ascending: false });
   return data ?? [];
 }
 

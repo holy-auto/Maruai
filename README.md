@@ -28,6 +28,7 @@ npm run dev
 ### 2. データベース
 `supabase/schema.sql` を Supabase の SQL Editor で実行。テーブル・RLS が入ります。
 施工事例（`works`）は id 1〜9 を初期投入済み。問い合わせは `contact_submissions`（source: home=トップ / contact=問い合わせページ）に保存されます。
+お客様の声（`voices`）は `supabase/migrations/20261113000000_create_voices.sql` で作成します。`published` の既定は false で、掲載許可を得た声だけ true にすると `/voice` に表示されます（架空の声は入れないこと）。
 
 ### 3. 画像
 `next.config.ts` の `images.remotePatterns` を自分の Supabase Storage ホストに。
