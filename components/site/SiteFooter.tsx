@@ -17,10 +17,11 @@ export function SiteFooter() {
       <div className="container py-[var(--space-3xl)]">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-12">
           <div className="md:col-span-7">
-            <p className="font-display font-bold text-display-s text-ink max-w-[16em]">
-              街の塗装屋さんから、
+            {/* 文節ごとに inline-block にして「へ。」だけが次の行に落ちないようにする */}
+            <p className="font-display font-bold text-display-s text-ink max-w-[16em] [&>span]:inline-block">
+              <span>街の塗装屋さんから、</span>
               <br />
-              知り合いの塗装屋さんへ。
+              <span>知り合いの</span><span>塗装屋さんへ。</span>
             </p>
             <p className="mt-6 text-base text-ink-2">
               阿見町の外壁・屋根塗装専門店

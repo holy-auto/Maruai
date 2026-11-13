@@ -208,7 +208,7 @@ export default function ExampleGrid({
 
   return (
     <section id="examples-grid" className="bg-paper">
-      <div className="container pt-[var(--space-2xl)] pb-[var(--section-gap)]">
+      <div className="container pt-[calc(var(--section-gap)/2)] pb-[var(--section-gap)]">
         {/* 見出し（1〜5列）と一文（7〜12列）、下端をそろえる */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-4 items-end">
           <h2 className="md:col-span-5 text-section">

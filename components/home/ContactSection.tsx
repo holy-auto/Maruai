@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 
-// どう頼めばいい？：左に電話・LINE・会社の情報（#company）、右にフォーム（Form）
+// 電話か、LINEか、フォームか。：左に電話・LINE・会社の情報（#company）、右にフォーム（Form）
 export default function ContactSection() {
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
@@ -81,7 +81,7 @@ export default function ContactSection() {
     <section id="contact" className="bg-paper py-[calc(var(--section-gap)/2)]">
       <div className="container">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-6 items-end">
-          <h2 className="md:col-span-6">どう頼めばいい？</h2>
+          <h2 className="md:col-span-6">電話か、LINEか、フォームか。</h2>
           <p className="lead md:col-span-6">
             ご相談はどのような事でもお気軽にどうぞ。お問い合わせは、3営業日以内に返信させていただきます。
           </p>

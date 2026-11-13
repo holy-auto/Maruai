@@ -35,13 +35,19 @@ export default function CompanyPage() {
     <main className="relative">
       <PageHero
         title="会社概要"
-        description="街の塗装屋さんから、知り合いの塗装屋さんへ。最高の仕上がりを、適正価格で。"
+        description={
+          // 文節ごとに inline-block にして「へ。」だけが次の行に落ちないようにする
+          <span className="[&>span]:inline-block">
+            <span>街の塗装屋さんから、</span><span>知り合いの塗装屋さんへ。</span>
+            <span>最高の仕上がりを、</span><span>適正価格で。</span>
+          </span>
+        }
       />
 
       {/* 代表挨拶 */}
       <section className="bg-paper pt-[var(--space-lg)] pb-[calc(var(--section-gap)/2)]">
         <div className="container">
-          <h2 className="max-w-none">代表挨拶</h2>
+          <h2 className="max-w-none">どうして、独立したの？</h2>
 
           <div className="mt-[var(--space-2xl)] grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-12 items-start">
             {REP_PHOTO ? (
@@ -97,7 +103,7 @@ export default function CompanyPage() {
       <section className="bg-paper py-[calc(var(--section-gap-l)/2)]">
         <div className="container">
           <div className="rule-bar grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-8 pt-[var(--space-xl)]">
-            <h2 className="md:col-span-4">会社概要</h2>
+            <h2 className="md:col-span-4">どこの、どんな会社？</h2>
             <dl className="md:col-span-8 divide-y divide-paper-3 border-b-hair border-paper-3">
               {CORP.map(([k, v]) => (
                 <div key={String(k)} className="grid grid-cols-1 sm:grid-cols-8 gap-x-8 gap-y-1 py-4 md:py-5">
@@ -110,7 +116,7 @@ export default function CompanyPage() {
                 <dd className="sm:col-span-6 text-base text-ink-2">
                   <a href="https://line.me/ti/p/UxXZqXMSWE" className="link">公式LINE</a>
                   <span className="mx-2 text-ink-2" aria-hidden="true">／</span>
-                  <a href="https://www.instagram.com/maruaisougyou" className="link">Instagram @maruaisougyou</a>
+                  <a href="https://www.instagram.com/maruaisougyou" className="link whitespace-nowrap">Instagram @maruaisougyou</a>
                 </dd>
               </div>
             </dl>

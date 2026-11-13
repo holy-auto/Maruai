@@ -1,12 +1,10 @@
 // 帯：墨の帯（1ページに1本）。問いの見出し（1〜7列）と、一文と行動（8〜12列）
 export default function ExamplesCTA() {
   return (
-    <section className="bg-ink text-plate-ink grained grained--light">
+    <section id="cta" className="bg-ink text-plate-ink grained grained--light">
       <div className="container py-[var(--section-gap-s)] grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-8 items-end">
         <h2 className="md:col-span-7 text-section text-plate-ink">
-          <a href="#cta" className="no-underline hover:underline focus-visible:outline-accent">
-            まずは概算料金をチェックしてみませんか？
-          </a>
+          まずは概算料金をチェックしてみませんか？
         </h2>
         <div className="md:col-span-5">
           <p className="text-lg text-plate-ink max-w-[34em]">

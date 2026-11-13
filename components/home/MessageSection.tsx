@@ -24,13 +24,14 @@ export default function MessageSection() {
       <div className="container">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-4 items-baseline">
           <h2 className="md:col-span-6 text-plate-ink">誰が塗るの？</h2>
-          <p className="md:col-span-6 text-base text-plate-ink">
-            株式会社丸愛装業　代表取締役 <span className="font-bold">小林力也</span>
+          <p className="md:col-span-6 text-plate-ink">
+            <span className="block font-display font-bold text-title">代表取締役の小林力也です。</span>
+            <span className="block mt-1 text-base">見積もりから施工、アフターまで、代表が責任を持ちます。</span>
           </p>
         </div>
 
         <div className="mt-[var(--space-2xl)] grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-6">
-          <p className="md:col-span-10 font-display font-bold text-display-s leading-tight text-plate-ink max-w-[22em]">
+          <p className="md:col-span-8 font-display font-bold text-title text-plate-ink max-w-[24em]">
             皆さんは100万円を貯めるのに、どのくらいの時間がかかりますか？
           </p>
           <p className="md:col-span-8 text-lead leading-relaxed text-plate-ink">

@@ -23,7 +23,7 @@ export default function PricePage() {
     <main className="relative">
       <PageHero
         eyebrow="Price"
-        title="料金プラン"
+        title="外壁塗装、いくらかかる？"
         description="守りたい年数で選べる、明確な料金。シミュレーターでその場で概算も出せます。"
       />
 

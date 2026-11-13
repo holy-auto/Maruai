@@ -32,12 +32,12 @@ export default function ServicesPage() {
     <main className="relative">
       <PageHero
         eyebrow="Services"
-        title="サービス・施工内容"
+        title="外壁・屋根の、何を頼める？"
         description="外壁塗装・屋根塗装・コーキング・防水工事。塗装工事をお考えなら、もう一社お見積もりを取りませんか。"
       />
 
       {/* Rows：名前と費用を1〜5列、説明とサインを6〜12列。行の間は細い罫 */}
-      <section className="bg-paper pb-[var(--section-gap)]">
+      <section className="bg-paper pt-[calc(var(--section-gap)/2)] pb-[var(--section-gap)]">
         <div className="container">
           {SERVICE_LIST.map((s) => (
             <article
@@ -81,7 +81,12 @@ export default function ServicesPage() {
         <div className="container grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-12">
           <div className="md:col-span-6 rule-bar pt-6">
             <h3>高圧洗浄だけでもOK</h3>
-            <p className="mt-3">
+            <p className="mt-4 font-figure font-bold leading-none text-ink tabular-nums">
+              <span className="text-[clamp(3.5rem,6vw,5.5rem)] leading-none">2</span>
+              <span className="font-display text-2xl ml-1">万円</span>
+              <span className="label ml-3">税込・100㎡まで</span>
+            </p>
+            <p className="mt-4">
               外構・駐車場・カーポートの高圧洗浄（100㎡まで）<strong className="font-bold">税込2万円</strong>。塗装をご契約のお客様は無償で実施します。
             </p>
           </div>

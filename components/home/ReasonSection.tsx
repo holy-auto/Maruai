@@ -31,16 +31,17 @@ export default function ReasonSection() {
     <section id="reason" className="bg-paper py-[calc(var(--section-gap-l)/2)]">
       <div className="container">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-6 items-end">
-          <h2 className="md:col-span-6">塗り替えはいつ？</h2>
+          <h2 className="md:col-span-6">築7〜10年、塗り替えどき？</h2>
           <p className="lead md:col-span-6">
             7〜10年メンテナンスをしていないお家は、以下のような劣化サインが出始めている可能性があります。早めの対処が、結果的に費用を抑える近道です。
           </p>
         </div>
 
-        <div className="mt-[var(--space-2xl)] overflow-x-auto">
-          <table className="w-full min-w-[640px] border-collapse text-left">
+        {/* md 以上は表。スマホでは各行を縦に積む（横スクロールで切れないように） */}
+        <div className="mt-[var(--space-2xl)]">
+          <table className="block md:table w-full border-collapse text-left">
             <caption className="visually-hidden">塗り替えが必要なサイン</caption>
-            <thead>
+            <thead className="hidden md:table-header-group">
               <tr className="border-b-bar border-ink">
                 <th scope="col" className="label py-3 pr-6 font-medium w-[26%]">サイン</th>
                 <th scope="col" className="label py-3 pr-6 font-medium w-[10%]">目安</th>
@@ -48,17 +49,26 @@ export default function ReasonSection() {
                 <th scope="col" className="label py-3 font-medium w-[24%]">放置すると</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="block md:table-row-group border-t-bar border-ink md:border-t-0">
               {reasons.map((r) => (
-                <tr key={r.title} className="border-b border-paper-3 align-top">
-                  <th scope="row" className="py-6 pr-6 font-display font-bold text-title text-ink">{r.title}</th>
-                  <td className="py-6 pr-6 text-base font-bold text-ink whitespace-nowrap">{r.severity}</td>
-                  <td className="py-6 pr-6 text-base text-ink-2">{r.desc}</td>
-                  <td className="py-6">
-                    <ol className="text-[0.9375rem] text-ink space-y-1">
+                <tr key={r.title} className="block md:table-row border-b border-paper-3 align-top py-6 md:py-0">
+                  <th scope="row" className="block md:table-cell md:py-6 md:pr-6 font-display font-bold text-title text-ink">
+                    {r.title}
+                    <span className="md:hidden ml-3 text-base font-body font-bold">（{r.severity}）</span>
+                  </th>
+                  <td className="hidden md:table-cell py-6 pr-6 text-base font-bold text-ink whitespace-nowrap">{r.severity}</td>
+                  <td className="block md:table-cell mt-3 md:mt-0 md:py-6 md:pr-6 text-base text-ink-2">{r.desc}</td>
+                  <td className="block md:table-cell mt-4 md:mt-0 md:py-6">
+                    <span className="md:hidden label block mb-1">放置すると</span>
+                    <ol className="flex flex-wrap md:block gap-x-1.5 text-[0.9375rem] text-ink md:space-y-1">
                       {r.consequence.map((c, i) => (
                         <li key={c} className="flex items-center gap-1.5">
-                          {i > 0 && <i className="ri-arrow-down-line text-muted" aria-hidden="true"></i>}
+                          {i > 0 && (
+                            <>
+                              <i className="ri-arrow-right-line md:hidden text-muted" aria-hidden="true"></i>
+                              <i className="ri-arrow-down-line hidden md:inline text-muted" aria-hidden="true"></i>
+                            </>
+                          )}
                           <span>{c}</span>
                         </li>
                       ))}

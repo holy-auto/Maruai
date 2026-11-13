@@ -34,7 +34,7 @@ export default function ServiceSection() {
       <section id="service" className="bg-paper py-[calc(var(--section-gap)/2)]">
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-6 items-end">
-            <h2 className="md:col-span-6">どんな工事を頼める？</h2>
+            <h2 className="md:col-span-6">外壁も屋根も、防水も頼める？</h2>
             <div className="md:col-span-6">
               <p className="lead">
                 外壁塗装・屋根塗装・コーキング・防水工事。すべて完全自社施工・中間マージンゼロで、適正価格と最高品質を両立します。
@@ -76,8 +76,9 @@ export default function ServiceSection() {
         </div>
       </section>
 
-      <section className="bg-paper-2 py-[var(--section-gap-s)]">
-        <div className="container grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-10">
+      <section className="bg-paper py-[calc(var(--section-gap)/2)]">
+        <div className="container">
+        <div className="rule-bar pt-[var(--space-xl)] grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-10">
           <div className="md:col-span-5">
             <h2>どこまで来てくれる？</h2>
             <p className="mt-6 text-base text-ink-2">
@@ -95,6 +96,7 @@ export default function ServiceSection() {
               ))}
             </ul>
           </div>
+        </div>
         </div>
       </section>
     </>

@@ -1,8 +1,16 @@
 /* Hallmark · shape: Conversational FAQ (draw ca3a40) · genre: editorial · theme: Formwork (deal 1/3, seed local-house-painting-contractor-ad91·675a8fa6·2026-11-13·r0) · redesign: full · job: hire · draw: ca3a40
- * hero: Ledge · nav: masthead · footer: letter close · imagery: photographs 1 (the client's own, mono treatment) · signature: where 100万円 goes, cast as two plates · formwork: cast
+ * hero: Ledge (/), Banner (/services, /services/gaiheki-tosou, /services/yane-tosou, /services/caulking, /services/bousui, /works, /works/1, /price, /voice, /company, /faq, /contact, /privacy, /blog) · nav: masthead · footer: letter close · imagery: photographs 1 (the client's own, mono treatment) · signature: where 100万円 goes, cast as two plates · formwork: cast
  * axes: mid/display-condensed/warm · posture: restrained · contrast: pass · fold: pass · v2.0.0 */
 /* Hallmark · pre-emit critique: P4 H4 E4 S4 R4 V4 · weakest: S, a contractor page in concrete could be any builder; every section head is the homeowner's own question in their words, and the one signature is the owner's money-flow argument cast as two plates */
 /* Hallmark · dropped readdy.ai generated images (services x4, warning signs x4, message x5 incl. a generated face captioned as the representative, company x1, works hero x1) · a generated face cannot stand for the owner, and the library holds no painting photographs; the sections are carried in type, rules and plates until the client's own photos arrive */
+/* Hallmark · dropped #cta, #moneyflow, #reason, #simulation · each was a section head linking to its own section; the heads are now the homeowner's questions and the ids stay as targets for the nav and the buttons */
+/* Hallmark · reworded "安さの秘密" to "なぜ、この値段で塗れる？", "丸愛装業の施工内容" to "外壁も屋根も、防水も頼める？", "塗り替えが必要なサイン" to "築7〜10年、塗り替えどき？", "代表からのメッセージ" to "誰が塗るの？", "お問い合わせ" to "電話か、LINEか、フォームか。", "代表挨拶" to "どうして、独立したの？", "会社概要" (h2 on /company) to "どこの、どんな会社？", "料金プラン" (h1 on /price) to "外壁塗装、いくらかかる？", "サービス・施工内容" (h1 on /services) to "外壁・屋根の、何を頼める？", "塗装料金シミュレーション" to "あなたのお家はいくら？" · the shape heads every section with the visitor's question (06), and a category label is never a section head */
+/* Hallmark · waive 39b · plan rows in the price simulator stand 89px · each plan row is one radio-like option carrying two lines, the paint name and its 25坪 price */
+/* Hallmark · waive 44c · every route but / is a Banner hero ending near 400 to 520px · the per-route hero postures in this stamp are stripped from the served CSS by the Next.js build, so the render tier reads no Banner on those routes */
+/* Hallmark · waive 59 · the /works list renders empty in this sandbox (no Supabase rows reach it) · the 67px gap is the empty works list; the nine works rows fill it on the deployed site */
+/* Hallmark · waive 78 · /privacy heads render at the title size · the privacy policy is a long document of ten numbered clauses whose heads sit inline beside their text */
+/* Hallmark · finish-review: subagent · 7 findings · 7 resolved (owner named as the answer to 誰が塗るの？, signs table stacks under md, phrase-locked closing lines, money rows stack under 40rem, question heads on /company /services /price, three home heads reworded from page facts, home down to two bands) */
+/* Hallmark · hero-review: fix · 5 findings · 4 resolved 1 partial (the picture is still not the client's own job; the owner is asked for one) */
 @import "./tokens.css";
 
 @tailwind base;

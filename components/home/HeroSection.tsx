@@ -31,12 +31,12 @@ export default function HeroSection() {
           </figure>
           <div className="plate md:col-span-4 flex flex-col justify-end p-6 md:p-8">
             <p className="label text-ink-2">外壁塗装の料金</p>
-            <p className="mt-2 font-figure font-bold leading-[0.9] text-ink tabular-nums">
-              <span className="text-[clamp(5rem,9vw,9rem)]">65</span>
+            <p className="mt-3 flex items-baseline gap-1 font-figure font-bold text-ink tabular-nums">
+              <span className="text-[clamp(5rem,9vw,9rem)] leading-none">65</span>
               <span className="font-display text-[clamp(1.5rem,2vw,2rem)]">万円〜</span>
             </p>
             <p className="mt-3 text-sm text-ink-2">ウレタン・延床25坪・足場代込み・税抜</p>
-            <a href="/price" className="link mt-4 text-sm self-start">グレード別の料金を見る</a>
+            <a href="/price" className="link mt-4 text-sm self-start whitespace-nowrap">グレード別の料金を見る</a>
           </div>
         </div>
 

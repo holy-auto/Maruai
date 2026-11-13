@@ -241,8 +241,8 @@ export default function SimulationSection() {
           {/* 概算：選ぶあいだも見えるよう、右に留める */}
           <div className="lg:col-span-5 lg:sticky lg:top-[var(--space-lg)] bg-ink text-plate-ink grained grained--light p-6 md:p-8" aria-live="polite">
             <p className="text-base font-medium text-plate-ink">おおよその料金（税抜）</p>
-            <p className="mt-2 font-figure font-bold leading-none tabular-nums text-plate-ink">
-              <span className="text-[clamp(4.5rem,8vw,7.5rem)]">{estimate}</span>
+            <p className="mt-2 flex items-baseline gap-1 font-figure font-bold tabular-nums text-plate-ink">
+              <span className="text-[clamp(4.5rem,8vw,7.5rem)] leading-none">{estimate}</span>
               <span className="font-display text-3xl ml-1">万円</span>
             </p>
             <p className="mt-4 text-base text-plate-ink">

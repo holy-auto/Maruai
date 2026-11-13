@@ -20,12 +20,15 @@ function Rows({ rows }: { rows: Row[] }) {
   return (
     <dl className="border-t-bar border-ink">
       {rows.map((r) => (
-        <div key={r.label} className="grid grid-cols-[1fr_auto] gap-x-6 items-baseline py-4 border-b border-paper-3">
+        // 40rem 未満では金額を項目名の下の行に置き、項目名が語の途中で折れないようにする
+        <div key={r.label} className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-x-6 gap-y-1 items-baseline py-4 border-b border-paper-3">
           <dt>
             <span className="block text-base font-medium text-ink">{r.label}</span>
             {r.note && <span className="block label mt-0.5">{r.note}</span>}
           </dt>
-          <dd className="font-figure font-bold text-xl text-ink tabular-nums whitespace-nowrap">{r.value ?? ""}</dd>
+          {r.value && (
+            <dd className="font-figure font-bold text-xl text-ink tabular-nums whitespace-nowrap">{r.value}</dd>
+          )}
         </div>
       ))}
     </dl>
@@ -53,8 +56,8 @@ export default function MoneyFlowSection() {
             </div>
             <div className="mt-auto pt-8">
               <p className="text-base font-medium text-ink">実際に工事に使われるのは</p>
-              <p className="font-figure font-bold leading-none text-ink tabular-nums">
-                <span className="text-[clamp(4.5rem,8vw,8rem)]">約30</span>
+              <p className="mt-2 flex items-baseline gap-1 font-figure font-bold text-ink tabular-nums">
+                <span className="text-[clamp(4.5rem,8vw,8rem)] leading-none">約30</span>
                 <span className="font-display text-[clamp(1.5rem,2vw,2rem)]">万円</span>
               </p>
               <p className="mt-2 text-base text-ink-2">支払った金額の約30%しか工事に使われない</p>
@@ -70,8 +73,8 @@ export default function MoneyFlowSection() {
             </div>
             <div className="mt-auto pt-8">
               <p className="text-base font-medium text-ink">実際に工事に使われる金額</p>
-              <p className="font-figure font-bold leading-none text-ink tabular-nums">
-                <span className="text-[clamp(4.5rem,8vw,8rem)]">100</span>
+              <p className="mt-2 flex items-baseline gap-1 font-figure font-bold text-ink tabular-nums">
+                <span className="text-[clamp(4.5rem,8vw,8rem)] leading-none">100</span>
                 <span className="font-display text-[clamp(1.5rem,2vw,2rem)]">万円</span>
               </p>
               <p className="mt-2 text-base text-ink-2">支払った金額の100%が職人と材料に</p>

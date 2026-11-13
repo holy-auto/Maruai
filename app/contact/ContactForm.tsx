@@ -113,7 +113,7 @@ export function ContactForm() {
           <span>送信に失敗しました。お手数ですがお電話・LINEをご利用ください。</span>
         </p>
       )}
-      <p className="text-sm text-ink-2">※ 送信内容は Supabase の contact_submissions テーブルに保存されます。環境変数が未設定の場合はLINE・電話が確実です。</p>
+      <p className="text-sm text-ink-2">※ 送信がうまくいかない場合は、お電話・LINEでお問い合わせください。</p>
     </div>
   );
 }
