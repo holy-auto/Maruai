@@ -7,10 +7,15 @@ export type Service = {
   symptoms: string[];
   priceFrom: string;
   metaDescription: string;
+  icon: string; // remixicon のクラス名。写真がない場合のビジュアルに使う
+  en: string; // 英字の小見出し
+  image?: string; // 実際の施工写真のパス（例: /images/services/gaiheki.jpg）。指定すると写真を表示
 };
 
 export const SERVICES: Record<string, Service> = {
   'gaiheki-tosou': {
+    icon: 'ri-building-line',
+    en: 'Exterior Wall',
     slug: 'gaiheki-tosou',
     name: '外壁塗装',
     serviceType: '外壁塗装',
@@ -21,6 +26,8 @@ export const SERVICES: Record<string, Service> = {
       '茨城県阿見町の外壁塗装。完全自社施工で下塗り・中塗り・上塗りの3回塗り。チョーキングや色あせ、ひび割れの無料診断・お見積りはお気軽に。',
   },
   'yane-tosou': {
+    icon: 'ri-home-5-line',
+    en: 'Roof',
     slug: 'yane-tosou',
     name: '屋根塗装',
     serviceType: '屋根塗装',
@@ -31,6 +38,8 @@ export const SERVICES: Record<string, Service> = {
       '茨城県阿見町の屋根塗装。遮熱・防水で建物の寿命を延ばします。外壁との同時施工で足場代を効率化。完全自社施工・無料診断。',
   },
   caulking: {
+    icon: 'ri-drop-line',
+    en: 'Caulking',
     slug: 'caulking',
     name: 'コーキング（シーリング）',
     serviceType: 'コーキング工事',
@@ -41,6 +50,8 @@ export const SERVICES: Record<string, Service> = {
       '茨城県阿見町のコーキング（シーリング）工事。目地・サッシ周りの打ち替え・増し打ちで雨水の侵入を防ぎます。完全自社施工・無料診断。',
   },
   bousui: {
+    icon: 'ri-shield-check-line',
+    en: 'Waterproofing',
     slug: 'bousui',
     name: '防水工事',
     serviceType: '防水工事',

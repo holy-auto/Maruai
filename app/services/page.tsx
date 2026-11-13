@@ -30,7 +30,25 @@ export default function ServicesPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
             {SERVICE_LIST.map((s) => (
               <article key={s.slug} className="bg-background-100 rounded-xl border border-background-200/70 overflow-hidden flex flex-col">
-                <div className="h-40 bg-background-200 flex items-center justify-center text-foreground-400 text-sm">［ {s.name}の写真 ］</div>
+                {s.image ? (
+                  <img
+                    src={s.image}
+                    alt={`${s.name}の施工写真`}
+                    className="h-44 w-full object-cover"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="relative h-44 overflow-hidden bg-gradient-to-br from-primary-600 to-primary-800 flex items-center gap-5 px-6 md:px-8">
+                    <i
+                      className={`${s.icon} absolute -right-4 -bottom-8 text-[9rem] leading-none text-background-50/10`}
+                      aria-hidden="true"
+                    ></i>
+                    <div className="relative w-16 h-16 shrink-0 flex items-center justify-center rounded-full bg-background-50/15 ring-1 ring-background-50/25 text-background-50 text-3xl">
+                      <i className={s.icon} aria-hidden="true"></i>
+                    </div>
+                    <div className="relative text-accent-300 text-base md:text-lg font-semibold tracking-widest uppercase">{s.en}</div>
+                  </div>
+                )}
                 <div className="p-6 flex flex-col flex-1">
                   <h2 className="font-heading text-xl md:text-2xl font-bold text-foreground-900 mb-2">{s.name}</h2>
                   <p className="text-base text-foreground-600 leading-relaxed mb-4">{s.lead}</p>
