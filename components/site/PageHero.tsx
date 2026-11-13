@@ -1,41 +1,28 @@
 import type { ReactNode } from 'react';
 
 /**
- * 二次ページ共通のヒーローバンド。固定ナビ（h-16/20）分の余白を上に確保する。
+ * 二次ページ共通のヒーロー（hero: Banner）。
+ * 画面の半分ほどの高さに見出しと一文だけを置き、最初のセクションが折り目より上に見える。
+ * 英字の小見出し（eyebrow）は Hallmark の Floor 54 により表示しない（prop は互換のため受け取るだけ）。
  */
 export function PageHero({
-  eyebrow,
   title,
   description,
+  children,
 }: {
   eyebrow?: string;
   title: ReactNode;
   description?: ReactNode;
+  children?: ReactNode;
 }) {
   return (
-    <section className="relative bg-primary-700 pt-28 md:pt-36 pb-14 md:pb-20 overflow-hidden">
-      <div
-        className="absolute inset-0 opacity-10"
-        style={{
-          backgroundImage:
-            'radial-gradient(circle at 20% 20%, white 1px, transparent 1px), radial-gradient(circle at 80% 60%, white 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
-        }}
-      />
-      <div className="relative w-full px-4 md:px-6 lg:px-8 max-w-6xl mx-auto text-center">
-        {eyebrow && (
-          <span className="inline-block text-accent-400 text-base font-semibold tracking-widest uppercase mb-3">
-            {eyebrow}
-          </span>
-        )}
-        <h1 className="font-heading text-3xl md:text-5xl font-bold text-background-50 mb-3">
-          {title}
-        </h1>
-        {description && (
-          <p className="text-background-100/85 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
-            {description}
-          </p>
-        )}
+    <section className="bg-paper">
+      <div className="container pt-[var(--space-3xl)] pb-[var(--space-2xl)]">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-6 items-end border-b-bar border-ink pb-[var(--space-xl)]">
+          <h1 className="md:col-span-7 text-display">{title}</h1>
+          {description && <p className="lead md:col-span-5">{description}</p>}
+        </div>
+        {children}
       </div>
     </section>
   );

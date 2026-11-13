@@ -23,6 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
+// 構成：パンくず → Banner（題 1〜8列、日付 9〜12列、下に墨の太線）→ 本文（行長 38em）
 export default async function PostDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const p = await getPost(slug);
@@ -42,11 +43,17 @@ export default async function PostDetail({ params }: { params: Promise<{ slug: s
     <main className="relative">
       <JsonLd data={articleJsonLd} />
       <Breadcrumbs items={[{ name: 'ホーム', url: '/' }, { name: 'コラム', url: '/blog' }, { name: p.title, url: `/blog/${slug}` }]} />
-      <article className="w-full py-10 md:py-14 bg-background-50">
-        <div className="w-full px-4 md:px-6 lg:px-8 max-w-3xl mx-auto">
-          <p className="text-sm text-foreground-500">{new Date(p.published_at).toLocaleDateString('ja-JP')}</p>
-          <h1 className="font-heading text-3xl md:text-4xl font-bold text-foreground-900 mt-2 mb-8">{p.title}</h1>
-          <div className="text-base text-foreground-700 leading-loose whitespace-pre-wrap">{p.body}</div>
+      <article className="bg-paper">
+        <div className="container pt-[var(--space-2xl)] pb-[calc(var(--section-gap-l)/2)]">
+          <header className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-4 items-end border-b-bar border-ink pb-[var(--space-xl)]">
+            <h1 className="md:col-span-8 text-display-s">{p.title}</h1>
+            <p className="label md:col-span-4 md:text-right">
+              <time dateTime={p.published_at} className="font-figure text-base tabular-nums">
+                {new Date(p.published_at).toLocaleDateString('ja-JP')}
+              </time>
+            </p>
+          </header>
+          <div className="mt-[var(--space-xl)] max-w-[38em] text-base text-ink leading-[1.75] whitespace-pre-wrap">{p.body}</div>
         </div>
       </article>
     </main>

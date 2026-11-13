@@ -108,6 +108,7 @@ const SECTIONS: Section[] = [
   },
 ];
 
+// 構成：Banner → Rows（条の見出しを左 1〜4列、本文を右 6〜12列、条の間は細線）→ 窓口（dl の表）
 export default function PrivacyPage() {
   return (
     <main className="relative">
@@ -118,59 +119,54 @@ export default function PrivacyPage() {
         ])}
       />
       <PageHero
-        eyebrow="Privacy Policy"
         title="プライバシーポリシー"
         description="お客様の個人情報の取り扱いについて"
       />
 
-      <section className="w-full py-14 md:py-20 bg-background-50">
-        <div className="w-full px-4 md:px-6 lg:px-8 max-w-3xl mx-auto">
-          <div className="space-y-10 text-base text-foreground-700 leading-relaxed">
+      <section className="bg-paper pb-[calc(var(--section-gap)/2)]">
+        <div className="container">
+          <div className="divide-y divide-paper-3 border-b-hair border-paper-3">
             {SECTIONS.map((s) => (
-              <section key={s.title}>
-                <h2 className="font-heading text-xl md:text-2xl font-bold text-foreground-900 mb-3 pb-2 border-b border-background-200/70">
-                  {s.title}
-                </h2>
-                {s.body}
+              <section key={s.title} className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-3 py-8 md:py-10">
+                <h2 className="md:col-span-4 text-title max-w-none">{s.title}</h2>
+                <div className="md:col-span-6 md:col-start-6 text-base text-ink-2 max-w-[38em]">{s.body}</div>
               </section>
             ))}
 
-            <section>
-              <h2 className="font-heading text-xl md:text-2xl font-bold text-foreground-900 mb-3 pb-2 border-b border-background-200/70">
-                10. お問い合わせ窓口
-              </h2>
-              <div className="bg-background-100 rounded-xl border border-background-200/70 p-5 md:p-6">
-                <dl className="space-y-2">
-                  <div className="flex flex-col sm:flex-row sm:gap-4">
-                    <dt className="font-semibold text-foreground-900 sm:w-28 shrink-0">事業者名</dt>
-                    <dd>株式会社 丸愛装業</dd>
-                  </div>
-                  <div className="flex flex-col sm:flex-row sm:gap-4">
-                    <dt className="font-semibold text-foreground-900 sm:w-28 shrink-0">代表者</dt>
-                    <dd>代表取締役　小林 力也</dd>
-                  </div>
-                  <div className="flex flex-col sm:flex-row sm:gap-4">
-                    <dt className="font-semibold text-foreground-900 sm:w-28 shrink-0">所在地</dt>
-                    <dd>〒300-0325　茨城県稲敷郡阿見町上条888</dd>
-                  </div>
-                  <div className="flex flex-col sm:flex-row sm:gap-4">
-                    <dt className="font-semibold text-foreground-900 sm:w-28 shrink-0">電話</dt>
-                    <dd>
-                      <a href="tel:029-886-7913" className="text-primary-700 hover:text-primary-800 font-medium">029-886-7913</a>
-                      （平日 9:00〜18:00）
-                    </dd>
-                  </div>
-                  <div className="flex flex-col sm:flex-row sm:gap-4">
-                    <dt className="font-semibold text-foreground-900 sm:w-28 shrink-0">フォーム</dt>
-                    <dd>
-                      <Link href="/contact" className="text-primary-700 hover:text-primary-800 font-medium">お問い合わせページ</Link>
-                    </dd>
-                  </div>
-                </dl>
-              </div>
+            <section className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-3 py-8 md:py-10">
+              <h2 className="md:col-span-4 text-title max-w-none">10. お問い合わせ窓口</h2>
+              <dl className="md:col-span-6 md:col-start-6 text-base text-ink-2 rule-bar divide-y divide-paper-3">
+                <div className="grid grid-cols-[6em_minmax(0,1fr)] gap-x-4 py-3">
+                  <dt className="font-bold text-ink">事業者名</dt>
+                  <dd>株式会社 丸愛装業</dd>
+                </div>
+                <div className="grid grid-cols-[6em_minmax(0,1fr)] gap-x-4 py-3">
+                  <dt className="font-bold text-ink">代表者</dt>
+                  <dd>代表取締役　小林 力也</dd>
+                </div>
+                <div className="grid grid-cols-[6em_minmax(0,1fr)] gap-x-4 py-3">
+                  <dt className="font-bold text-ink">所在地</dt>
+                  <dd>〒300-0325　茨城県稲敷郡阿見町上条888</dd>
+                </div>
+                <div className="grid grid-cols-[6em_minmax(0,1fr)] gap-x-4 py-3">
+                  <dt className="font-bold text-ink">電話</dt>
+                  <dd>
+                    <a href="tel:029-886-7913" className="link font-figure tabular-nums">029-886-7913</a>
+                    （平日 9:00〜18:00）
+                  </dd>
+                </div>
+                <div className="grid grid-cols-[6em_minmax(0,1fr)] gap-x-4 py-3">
+                  <dt className="font-bold text-ink">フォーム</dt>
+                  <dd>
+                    <Link href="/contact" className="link">お問い合わせページ</Link>
+                  </dd>
+                </div>
+              </dl>
             </section>
+          </div>
 
-            <p className="text-sm text-foreground-500 text-right">制定日：{ENACTED}</p>
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8">
+            <p className="label md:col-span-6 md:col-start-6 pt-6">制定日：{ENACTED}</p>
           </div>
         </div>
       </section>

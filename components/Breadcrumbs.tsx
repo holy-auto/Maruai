@@ -2,26 +2,26 @@ import Link from 'next/link';
 import { JsonLd } from './JsonLd';
 import { breadcrumbJsonLd } from '@/lib/seo';
 
+// パンくず：本文の書体で一段小さく。区切りは斜線、今いるページは墨の地の文字（リンクにしない）
 export function Breadcrumbs({ items }: { items: { name: string; url: string }[] }) {
   return (
     <>
       <JsonLd data={breadcrumbJsonLd(items)} />
-      <nav
-        aria-label="パンくずリスト"
-        className="w-full px-4 md:px-6 lg:px-8 max-w-6xl mx-auto pt-24 md:pt-28 text-sm text-foreground-500"
-      >
-        {items.map((it, i) => (
-          <span key={it.url}>
-            {i > 0 && <span className="mx-1.5 text-foreground-300">/</span>}
-            {i < items.length - 1 ? (
-              <Link href={it.url} className="text-primary-600 hover:text-primary-700 transition-colors">
-                {it.name}
-              </Link>
-            ) : (
-              <span className="text-foreground-700">{it.name}</span>
-            )}
-          </span>
-        ))}
+      <nav aria-label="パンくずリスト" className="container pt-[var(--space-lg)]">
+        <ol className="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-sm text-ink-2">
+          {items.map((it, i) => (
+            <li key={it.url} className="flex items-baseline gap-x-2 min-w-0">
+              {i > 0 && <span aria-hidden="true">/</span>}
+              {i < items.length - 1 ? (
+                <Link href={it.url} className="link whitespace-nowrap">
+                  {it.name}
+                </Link>
+              ) : (
+                <span aria-current="page" className="text-ink">{it.name}</span>
+              )}
+            </li>
+          ))}
+        </ol>
       </nav>
     </>
   );

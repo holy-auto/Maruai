@@ -1,31 +1,24 @@
+// 帯：墨の帯（1ページに1本）。問いの見出し（1〜7列）と、一文と行動（8〜12列）
 export default function ExamplesCTA() {
   return (
-    <section className="w-full py-14 md:py-20 bg-background-50">
-      <div className="w-full px-4 md:px-6 lg:px-8 max-w-6xl mx-auto">
-        <div className="bg-background-100 rounded-xl p-8 md:p-12 border border-background-200/70 text-center">
-          <div className="w-16 h-16 flex items-center justify-center bg-accent-100 rounded-full mx-auto mb-6">
-            <i className="ri-price-tag-3-line text-accent-600 text-2xl"></i>
-          </div>
-          <h4 className="font-heading text-2xl md:text-3xl font-bold text-foreground-900 mb-3">
-            <a href="#cta">まずは概算料金をチェックしてみませんか？</a>
-          </h4>
-          <p className="text-foreground-600 text-base md:text-lg max-w-lg mx-auto mb-6 leading-relaxed">
-            塗装は<strong>適正価格</strong>で。丸愛装業は<strong>完全自社施工</strong>だから、
-            中間マージンのない<strong>納得の料金</strong>でご提案できます。
+    <section className="bg-ink text-plate-ink grained grained--light">
+      <div className="container py-[var(--section-gap-s)] grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-8 items-end">
+        <h2 className="md:col-span-7 text-section text-plate-ink">
+          <a href="#cta" className="no-underline hover:underline focus-visible:outline-accent">
+            まずは概算料金をチェックしてみませんか？
+          </a>
+        </h2>
+        <div className="md:col-span-5">
+          <p className="text-lg text-plate-ink max-w-[34em]">
+            塗装は適正価格で。丸愛装業は完全自社施工だから、中間マージンのない納得の料金でご提案できます。
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a
-              href="/#simulation"
-              className="px-8 py-3.5 rounded-full bg-primary-500 text-background-50 text-base font-semibold hover:bg-primary-600 transition-colors whitespace-nowrap shadow-[0_0_20px_rgba(var(--primary-500),0.25)]"
-            >
-              <i className="ri-price-tag-3-line mr-1.5"></i>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <a href="/#simulation" className="btn btn--primary focus-visible:outline-plate-ink">
+              <i className="ri-price-tag-3-line text-xl" aria-hidden="true"></i>
               概算料金をチェック
             </a>
-            <a
-              href="tel:029-886-7913"
-              className="px-8 py-3.5 rounded-full bg-background-50 text-foreground-800 border border-background-300/60 text-base font-medium hover:bg-background-200 transition-colors whitespace-nowrap"
-            >
-              <i className="ri-phone-line mr-1.5"></i>
+            <a href="tel:029-886-7913" className="btn btn--on-ink font-figure">
+              <i className="ri-phone-line text-xl" aria-hidden="true"></i>
               029-886-7913
             </a>
           </div>

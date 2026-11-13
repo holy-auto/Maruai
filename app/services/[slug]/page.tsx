@@ -24,6 +24,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
+// 和文の見出しを語の途中で折り返さないよう、括弧の前で分けて inline-block にする
+function splitName(name: string) {
+  return name.split(/(?=（)/).map((part) => (
+    <span key={part} className="inline-block">
+      {part}
+    </span>
+  ));
+}
+
+// hero: Banner（見出し・一文・行動だけ）· sections: Rows ＋ 費用の板 · Band ink（対応エリア）
 export default async function ServiceDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const s = SERVICES[slug];
@@ -44,48 +54,71 @@ export default async function ServiceDetail({ params }: { params: Promise<{ slug
       <JsonLd data={serviceJsonLd} />
       <Breadcrumbs items={[{ name: 'ホーム', url: '/' }, { name: 'サービス', url: '/services' }, { name: s.name, url: `/services/${s.slug}` }]} />
 
-      <section className="w-full pt-8 pb-14 md:pb-20 bg-background-50">
-        <div className="w-full px-4 md:px-6 lg:px-8 max-w-4xl mx-auto">
-          <span className="inline-block text-accent-500 text-base font-semibold tracking-widest uppercase mb-2">Service</span>
-          <h1 className="font-heading text-3xl md:text-5xl font-bold text-foreground-900 mb-4">{s.name}</h1>
-          <p className="text-base md:text-lg text-foreground-600 leading-relaxed mb-10">{s.lead}</p>
-
-          <div className="bg-background-100 rounded-xl border border-background-200/70 p-6 md:p-8">
-            <h2 className="font-heading text-xl md:text-2xl font-bold text-foreground-900 mb-4">こんなサインはありませんか</h2>
-            <ul className="space-y-3">
-              {s.symptoms.map((sym) => (
-                <li key={sym} className="flex items-start gap-2.5 text-base text-foreground-700">
-                  <i className="ri-checkbox-circle-line text-primary-500 text-lg mt-0.5"></i>{sym}
-                </li>
-              ))}
-            </ul>
-            <p className="mt-6 font-bold text-foreground-900">費用の目安：<span className="text-primary-700">{s.priceFrom}</span></p>
-          </div>
-
-          <div className="flex flex-wrap gap-3 mt-8">
-            <a href={LINE} className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-green-500 text-background-50 font-semibold hover:bg-green-600 transition-colors">
-              <i className="ri-line-fill text-lg"></i>LINEで無料相談
-            </a>
-            <Link href="/price" className="inline-flex items-center gap-1.5 px-6 py-3.5 rounded-full border border-background-300/60 text-foreground-700 font-medium hover:bg-primary-50 hover:text-primary-700 hover:border-primary-300 transition-colors">
-              料金・概算を見る<i className="ri-arrow-right-line"></i>
-            </Link>
+      {/* hero: 見出し（1〜7列）、一文と行動（8〜12列）、下に墨の太線 */}
+      <section className="bg-paper">
+        <div className="container pt-[var(--space-xl)]">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-6 items-end border-b-bar border-ink pb-[var(--space-xl)]">
+            <h1 className="lg:col-span-7 text-display">{splitName(s.name)}</h1>
+            <div className="lg:col-span-5">
+              <p className="lead">{s.lead}</p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <a href={LINE} className="btn btn--primary">
+                  <i className="ri-line-fill text-xl" aria-hidden="true"></i>
+                  LINEで無料相談
+                </a>
+                <Link href="/price" className="btn btn--secondary">
+                  料金・概算を見る
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="w-full py-14 md:py-20 bg-background-100">
-        <div className="w-full px-4 md:px-6 lg:px-8 max-w-4xl mx-auto">
-          <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground-900 mb-6">対応エリア</h2>
-          <div className="flex flex-wrap gap-2">
-            {AREAS.map((name) => (
-              <span key={name} className="px-4 py-2 rounded-full bg-background-50 border border-background-200/70 text-base text-foreground-700">{name}</span>
-            ))}
+      {/* Rows：問いを1〜5列、サインの行と費用の板を6〜12列 */}
+      <section className="bg-paper py-[var(--section-gap-s)]">
+        <div className="container grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-10">
+          <h2 className="lg:col-span-5">こんなサインはありませんか</h2>
+          <div className="lg:col-span-7">
+            <ul className="border-t-bar border-ink">
+              {s.symptoms.map((sym) => (
+                <li key={sym} className="flex items-start gap-3 py-5 border-b-hair border-paper-3 text-lg text-ink">
+                  <i className="ri-check-line text-xl leading-8 text-ink" aria-hidden="true"></i>
+                  <span>{sym}</span>
+                </li>
+              ))}
+            </ul>
+            <dl className="plate mt-12 p-6 md:p-8">
+              <dt className="label">費用の目安</dt>
+              <dd className="mt-2 font-display font-bold text-title text-ink tabular-nums">{s.priceFrom}</dd>
+            </dl>
           </div>
-          {(s.slug === 'gaiheki-tosou' || s.slug === 'yane-tosou') && (
-            <p className="mt-6">
-              <Link href={`/${s.slug}/ami`} className="text-primary-600 hover:text-primary-700 font-medium">阿見町の{s.name}はこちら →</Link>
-            </p>
-          )}
+        </div>
+      </section>
+
+      {/* Band ink：対応エリアの6市町を大きな字で */}
+      <section className="bg-ink text-plate-ink grained grained--light py-[var(--section-gap)]">
+        <div className="container grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-10">
+          <h2 className="lg:col-span-4 text-plate-ink">対応エリア</h2>
+          <div className="lg:col-span-8">
+            <ul className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 sm:gap-x-8 border-t-hair border-muted">
+              {AREAS.map((name) => (
+                <li
+                  key={name}
+                  className="py-6 border-b-hair border-muted font-display font-bold text-section leading-tight text-plate-ink"
+                >
+                  {name}
+                </li>
+              ))}
+            </ul>
+            {(s.slug === 'gaiheki-tosou' || s.slug === 'yane-tosou') && (
+              <p className="mt-10">
+                <Link href={`/${s.slug}/ami`} className="btn btn--on-ink">
+                  阿見町の{s.name}はこちら
+                </Link>
+              </p>
+            )}
+          </div>
         </div>
       </section>
     </main>

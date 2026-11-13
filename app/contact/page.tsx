@@ -11,39 +11,47 @@ export const metadata: Metadata = {
   alternates: { canonical: '/contact' },
 };
 
+// 構成：Banner → Form beside the facts（電話・LINE の事実を左 5列、フォームの板を右 6列）
 export default function ContactPage() {
   return (
     <main className="relative">
       <PageHero
-        eyebrow="Contact"
         title="お問い合わせ"
         description="ご相談はどのような事でもお気軽にどうぞ。3営業日以内にご返信します。"
       />
-      <section className="w-full py-14 md:py-20 bg-background-50">
-        <div className="w-full px-4 md:px-6 lg:px-8 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-          <div>
-            <div className="bg-background-100 rounded-xl border border-background-200/70 p-6 md:p-8">
-              <span className="inline-block text-accent-500 text-base font-semibold tracking-widest uppercase mb-2">Tel / LINE</span>
-              <h2 className="font-heading text-xl font-bold text-foreground-900 mb-4">お電話・LINEが早いです</h2>
-              <div className="flex items-center gap-3 p-4 bg-primary-50 rounded-lg border border-primary-200/50 mb-3">
-                <div className="w-10 h-10 flex items-center justify-center bg-primary-500 rounded-full text-background-50"><i className="ri-phone-line text-lg"></i></div>
-                <div>
-                  <p className="text-sm text-foreground-500">TEL（平日 9:00〜18:00）</p>
-                  <a href={TEL} className="text-lg font-bold text-primary-700 hover:text-primary-800">029-886-7913</a>
-                </div>
-              </div>
-              <div className="space-y-3">
-                <a href={LINE} className="flex items-center gap-3 px-4 py-3 bg-green-500 rounded-lg text-background-50 hover:bg-green-600 transition-colors">
-                  <i className="ri-line-fill text-xl"></i><span className="text-base font-semibold">LINEで相談する</span>
+      <section className="bg-paper pt-[var(--space-lg)] pb-[calc(var(--section-gap)/2)]">
+        <div className="container grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-16 items-start">
+          <div className="md:col-span-5">
+            <h2>お電話・LINEが早いです</h2>
+
+            <div className="mt-8 rule-bar">
+              <div className="py-6 border-b-hair border-paper-3">
+                <p className="label">TEL（平日 9:00〜18:00）</p>
+                <a
+                  href={TEL}
+                  className="link mt-2 inline-flex items-center gap-2 font-figure font-bold text-[length:var(--text-3xl)] leading-none tabular-nums no-underline hover:underline"
+                >
+                  <i className="ri-phone-line text-2xl" aria-hidden="true"></i>
+                  029-886-7913
                 </a>
               </div>
-              <p className="mt-5 text-sm text-foreground-500">
-                FAX：029-886-5499<br />
-                Instagram：<a href="https://www.instagram.com/maruaisougyou" className="text-primary-600 hover:text-primary-700">@maruaisougyou</a>
+              <div className="py-6 border-b-hair border-paper-3">
+                <a href={LINE} className="btn btn--secondary">
+                  <i className="ri-line-fill text-xl" aria-hidden="true"></i>
+                  LINEで相談する
+                </a>
+              </div>
+              <p className="pt-6 text-base text-ink-2">
+                FAX：<span className="font-figure tabular-nums">029-886-5499</span>
+                <br />
+                Instagram：<a href="https://www.instagram.com/maruaisougyou" className="link">@maruaisougyou</a>
               </p>
             </div>
           </div>
-          <ContactForm />
+
+          <div className="md:col-span-6 md:col-start-7">
+            <ContactForm />
+          </div>
         </div>
       </section>
     </main>

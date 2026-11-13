@@ -29,82 +29,92 @@ const REP_POINTS = [
   { icon: 'ri-map-pin-time-line', text: 'すぐ駆けつけられる60分圏内に限定して施工' },
 ];
 
+// 構成：Banner → 代表挨拶（Split：プロフィールの板 5列 ＋ 挨拶文 6列）→ 会社概要（見出し 1〜4列 ＋ 表 5〜12列）
 export default function CompanyPage() {
   return (
     <main className="relative">
       <PageHero
-        eyebrow="About us"
         title="会社概要"
         description="街の塗装屋さんから、知り合いの塗装屋さんへ。最高の仕上がりを、適正価格で。"
       />
 
-      <section className="w-full py-14 md:py-20 bg-foreground-900 text-background-100">
-        <div className="w-full px-4 md:px-6 lg:px-8 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-          {REP_PHOTO ? (
-            <img
-              src={REP_PHOTO}
-              alt="株式会社 丸愛装業 代表取締役 小林 力也"
-              className="w-full h-72 md:h-96 rounded-xl object-cover"
-            />
-          ) : (
-            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary-700 to-primary-900 p-7 md:p-9 ring-1 ring-background-50/10">
-              <i
-                className="ri-double-quotes-l absolute -right-2 -top-6 text-[10rem] leading-none text-background-50/10"
-                aria-hidden="true"
-              ></i>
-              <div className="relative">
-                <span className="text-accent-300 text-sm font-semibold tracking-widest uppercase">Representative</span>
-                <p className="mt-2 text-base text-background-200">代表取締役</p>
-                <p className="font-heading text-3xl md:text-4xl font-bold text-background-50 tracking-wide">小林 力也</p>
-                <ul className="mt-6 pt-6 border-t border-background-50/15 space-y-3">
+      {/* 代表挨拶 */}
+      <section className="bg-paper pt-[var(--space-lg)] pb-[calc(var(--section-gap)/2)]">
+        <div className="container">
+          <h2 className="max-w-none">代表挨拶</h2>
+
+          <div className="mt-[var(--space-2xl)] grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-12 items-start">
+            {REP_PHOTO ? (
+              <figure
+                className="photo md:col-span-5 m-0 aspect-[4/5]"
+                data-slot="representative"
+              >
+                <img
+                  src={REP_PHOTO}
+                  alt="株式会社 丸愛装業 代表取締役 小林 力也"
+                  width={800}
+                  height={1000}
+                />
+              </figure>
+            ) : (
+              <div className="plate md:col-span-5 p-6 md:p-8">
+                <p className="label">代表取締役</p>
+                <p className="mt-1 font-display font-bold text-[length:var(--text-3xl)] leading-tight text-ink [font-feature-settings:'palt']">
+                  小林 力也
+                </p>
+                <ul className="mt-6 border-t-hair border-paper-3 divide-y divide-paper-3">
                   {REP_POINTS.map((p) => (
-                    <li key={p.text} className="flex items-start gap-3 text-base text-background-100">
-                      <span className="w-8 h-8 shrink-0 flex items-center justify-center rounded-full bg-background-50/15 text-accent-300">
-                        <i className={p.icon} aria-hidden="true"></i>
-                      </span>
-                      <span className="pt-1 leading-relaxed">{p.text}</span>
+                    <li key={p.text} className="flex items-start gap-3 py-4 text-base text-ink">
+                      <i className={`${p.icon} text-xl leading-[1.75] text-ink`} aria-hidden="true"></i>
+                      <span>{p.text}</span>
                     </li>
                   ))}
                 </ul>
               </div>
+            )}
+
+            <div className="md:col-span-6 md:col-start-7">
+              <p className="font-display font-bold text-[length:var(--text-2xl)] leading-[1.4] text-ink [font-feature-settings:'palt']">
+                「期待しているよ」
+                <br />
+                その言葉に、
+                <br />
+                真っ直ぐ応えたくて。
+              </p>
+              <div className="mt-8 space-y-5 text-base text-ink-2 max-w-[38em]">
+                <p>100万円を貯めるのに、3年、5年とかかる方も少なくありません。その大切なお金で行う外壁塗装が、本当に信頼できる業者に任せられているか。私はそこを一番に考えています。</p>
+                <p>営業会社が請けた工事では、職人に渡る材料費や工賃が削られ、どう頑張っても良い仕事ができない。その悔しさが、独立の原点です。小さな会社だからこそ、一件一件に真心を込めて対応します。</p>
+              </div>
+              <p className="mt-8 pt-5 border-t-hair border-paper-3 text-base text-ink-2">
+                株式会社 丸愛装業　代表取締役　<b className="font-display font-bold text-ink">小林 力也</b>
+              </p>
             </div>
-          )}
-          <div>
-            <span className="inline-block text-accent-400 text-base font-semibold tracking-widest uppercase mb-3">代表挨拶</span>
-            <p className="font-heading text-2xl md:text-3xl font-bold leading-relaxed text-background-50 mb-5">
-              「期待しているよ」<br />その言葉に、<br /><span className="text-accent-400">真っ直ぐ応えたくて。</span>
-            </p>
-            <div className="space-y-4 text-base text-background-200 leading-relaxed">
-              <p>100万円を貯めるのに、3年、5年とかかる方も少なくありません。その大切なお金で行う外壁塗装が、本当に信頼できる業者に任せられているか——。私はそこを一番に考えています。</p>
-              <p>営業会社が請けた工事では、職人に渡る材料費や工賃が削られ、どう頑張っても良い仕事ができない。その悔しさが、独立の原点です。小さな会社だからこそ、一件一件に真心を込めて対応します。</p>
-            </div>
-            <p className="mt-6 text-base text-background-300">株式会社 丸愛装業　代表取締役　<b className="font-heading text-background-50">小林 力也</b></p>
           </div>
         </div>
       </section>
 
-      <section className="w-full py-14 md:py-20 bg-background-50">
-        <div className="w-full px-4 md:px-6 lg:px-8 max-w-3xl mx-auto">
-          <div className="text-center mb-10">
-            <span className="inline-block text-accent-500 text-base font-semibold tracking-widest uppercase mb-2">Company profile</span>
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground-900">会社概要</h2>
-          </div>
-          <dl className="bg-background-100 rounded-xl border border-background-200/70 divide-y divide-background-200/70 overflow-hidden">
-            {CORP.map(([k, v]) => (
-              <div key={String(k)} className="grid grid-cols-1 sm:grid-cols-3 gap-1 px-5 py-4 md:px-6">
-                <dt className="text-sm font-semibold text-foreground-500">{k}</dt>
-                <dd className="sm:col-span-2 text-base text-foreground-800">{v}</dd>
+      {/* 会社概要：見出しを左に、表（dl）を右に。上端に墨の太線、行の間は細線 */}
+      <section className="bg-paper py-[calc(var(--section-gap-l)/2)]">
+        <div className="container">
+          <div className="rule-bar grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-8 pt-[var(--space-xl)]">
+            <h2 className="md:col-span-4">会社概要</h2>
+            <dl className="md:col-span-8 divide-y divide-paper-3 border-b-hair border-paper-3">
+              {CORP.map(([k, v]) => (
+                <div key={String(k)} className="grid grid-cols-1 sm:grid-cols-8 gap-x-8 gap-y-1 py-4 md:py-5">
+                  <dt className="sm:col-span-2 text-base font-bold text-ink">{k}</dt>
+                  <dd className="sm:col-span-6 text-base text-ink-2 tabular-nums">{v}</dd>
+                </div>
+              ))}
+              <div className="grid grid-cols-1 sm:grid-cols-8 gap-x-8 gap-y-1 py-4 md:py-5">
+                <dt className="sm:col-span-2 text-base font-bold text-ink">公式SNS</dt>
+                <dd className="sm:col-span-6 text-base text-ink-2">
+                  <a href="https://line.me/ti/p/UxXZqXMSWE" className="link">公式LINE</a>
+                  <span className="mx-2 text-ink-2" aria-hidden="true">／</span>
+                  <a href="https://www.instagram.com/maruaisougyou" className="link">Instagram @maruaisougyou</a>
+                </dd>
               </div>
-            ))}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 px-5 py-4 md:px-6">
-              <dt className="text-sm font-semibold text-foreground-500">公式SNS</dt>
-              <dd className="sm:col-span-2 text-base text-foreground-800">
-                <a href="https://line.me/ti/p/UxXZqXMSWE" className="text-primary-600 hover:text-primary-700">公式LINE</a>
-                <span className="mx-2 text-foreground-300">／</span>
-                <a href="https://www.instagram.com/maruaisougyou" className="text-primary-600 hover:text-primary-700">Instagram @maruaisougyou</a>
-              </dd>
-            </div>
-          </dl>
+            </dl>
+          </div>
         </div>
       </section>
     </main>

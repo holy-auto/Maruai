@@ -10,13 +10,23 @@ export const metadata: Metadata = {
 };
 
 const FLOW = [
-  { icon: 'ri-chat-3-line', t: 'ご相談', d: 'LINE・電話・フォームからお気軽に。' },
-  { icon: 'ri-search-eye-line', t: '現地診断', d: '代表が直接、外壁・屋根を点検します。' },
-  { icon: 'ri-file-list-3-line', t: 'お見積り', d: '内訳の明確な、適正価格をご提示。' },
-  { icon: 'ri-brush-line', t: '施工', d: '自社の職人が、丁寧に塗り上げます。' },
-  { icon: 'ri-shield-check-line', t: 'アフター', d: '最長10年保証で、その後も安心。' },
+  { t: 'ご相談', d: 'LINE・電話・フォームからお気軽に。' },
+  { t: '現地診断', d: '代表が直接、外壁・屋根を点検します。' },
+  { t: 'お見積り', d: '内訳の明確な、適正価格をご提示。' },
+  { t: '施工', d: '自社の職人が、丁寧に塗り上げます。' },
+  { t: 'アフター', d: '最長10年保証で、その後も安心。' },
 ];
 
+// 和文の見出しを語の途中で折り返さないよう、括弧の前で分けて inline-block にする
+function splitName(name: string) {
+  return name.split(/(?=（)/).map((part) => (
+    <span key={part} className="inline-block">
+      {part}
+    </span>
+  ));
+}
+
+// sections: Rows（4つのサービス、写真があれば左列に）· Band paper-2（2つの補足）· Steps（<ol> 5段）
 export default function ServicesPage() {
   return (
     <main className="relative">
@@ -25,80 +35,87 @@ export default function ServicesPage() {
         title="サービス・施工内容"
         description="外壁塗装・屋根塗装・コーキング・防水工事。塗装工事をお考えなら、もう一社お見積もりを取りませんか。"
       />
-      <section className="w-full py-14 md:py-20 bg-background-50">
-        <div className="w-full px-4 md:px-6 lg:px-8 max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
-            {SERVICE_LIST.map((s) => (
-              <article key={s.slug} className="bg-background-100 rounded-xl border border-background-200/70 overflow-hidden flex flex-col">
-                {s.image ? (
-                  <img
-                    src={s.image}
-                    alt={`${s.name}の施工写真`}
-                    className="h-44 w-full object-cover"
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className="relative h-44 overflow-hidden bg-gradient-to-br from-primary-600 to-primary-800 flex items-center gap-5 px-6 md:px-8">
-                    <i
-                      className={`${s.icon} absolute -right-4 -bottom-8 text-[9rem] leading-none text-background-50/10`}
-                      aria-hidden="true"
-                    ></i>
-                    <div className="relative w-16 h-16 shrink-0 flex items-center justify-center rounded-full bg-background-50/15 ring-1 ring-background-50/25 text-background-50 text-3xl">
-                      <i className={s.icon} aria-hidden="true"></i>
-                    </div>
-                    <div className="relative text-accent-300 text-base md:text-lg font-semibold tracking-widest uppercase">{s.en}</div>
-                  </div>
-                )}
-                <div className="p-6 flex flex-col flex-1">
-                  <h2 className="font-heading text-xl md:text-2xl font-bold text-foreground-900 mb-2">{s.name}</h2>
-                  <p className="text-base text-foreground-600 leading-relaxed mb-4">{s.lead}</p>
-                  <ul className="space-y-1.5 mb-4">
-                    {s.symptoms.map((sym) => (
-                      <li key={sym} className="flex items-start gap-2 text-base text-foreground-700">
-                        <i className="ri-check-line text-primary-500 mt-1"></i>{sym}
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="mt-auto">
-                    <div className="text-primary-700 font-bold mb-3">{s.priceFrom}</div>
-                    <Link href={`/services/${s.slug}`} className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full border border-background-300/60 text-foreground-700 text-base font-medium hover:bg-primary-50 hover:text-primary-700 hover:border-primary-300 transition-colors">
-                      詳しく見る<i className="ri-arrow-right-line"></i>
-                    </Link>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
-            <div className="bg-primary-50 rounded-xl border border-primary-200/60 p-6">
-              <h3 className="font-heading text-lg font-bold text-foreground-900 mb-2">高圧洗浄だけでもOK</h3>
-              <p className="text-base text-foreground-600 leading-relaxed">外構・駐車場・カーポートの高圧洗浄（100㎡まで）<span className="font-semibold text-primary-700">税込2万円</span>。塗装をご契約のお客様は無償で実施します。</p>
-            </div>
-            <div className="bg-secondary-50 rounded-xl border border-secondary-200/60 p-6">
-              <h3 className="font-heading text-lg font-bold text-foreground-900 mb-2">火災保険の活用診断</h3>
-              <p className="text-base text-foreground-600 leading-relaxed">風・雨・雪・雹などによる外壁・屋根の被害は、火災保険の<span className="font-semibold text-secondary-800">風災補償</span>の対象になる場合があります。診断は無料です。</p>
-            </div>
+      {/* Rows：名前と費用を1〜5列、説明とサインを6〜12列。行の間は細い罫 */}
+      <section className="bg-paper pb-[var(--section-gap)]">
+        <div className="container">
+          {SERVICE_LIST.map((s) => (
+            <article
+              key={s.slug}
+              className="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-6 py-[var(--space-2xl)] first:pt-0 border-t-hair border-paper-3 first:border-t-0"
+            >
+              <div className="lg:col-span-5">
+                <h2>{splitName(s.name)}</h2>
+                <p className="mt-4 font-display font-bold text-lg text-ink tabular-nums">{s.priceFrom}</p>
+                {s.image ? (
+                  <figure
+                    className="photo mt-8 aspect-[4/3]"
+                    data-slot="service"
+                    data-alt={`${s.name}の施工写真`}
+                  >
+                    <img src={s.image} alt={`${s.name}の施工写真`} loading="lazy" />
+                  </figure>
+                ) : null}
+              </div>
+              <div className="lg:col-span-7">
+                <p className="lead">{s.lead}</p>
+                <ul className="mt-8 border-t-hair border-paper-3">
+                  {s.symptoms.map((sym) => (
+                    <li key={sym} className="flex items-start gap-3 py-3 border-b-hair border-paper-3 text-ink">
+                      <i className="ri-check-line text-xl leading-7 text-ink" aria-hidden="true"></i>
+                      <span>{sym}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Link href={`/services/${s.slug}`} className="link mt-8 inline-block font-medium whitespace-nowrap">
+                  <span className="visually-hidden">{s.name}を</span>詳しく見る
+                </Link>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* Band：一段暗い面に、補足の2項を並べる */}
+      <section className="bg-paper-2 py-[var(--section-gap-s)]">
+        <div className="container grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-12">
+          <div className="md:col-span-6 rule-bar pt-6">
+            <h3>高圧洗浄だけでもOK</h3>
+            <p className="mt-3">
+              外構・駐車場・カーポートの高圧洗浄（100㎡まで）<strong className="font-bold">税込2万円</strong>。塗装をご契約のお客様は無償で実施します。
+            </p>
+          </div>
+          <div className="md:col-span-6 rule-bar pt-6">
+            <h3>火災保険の活用診断</h3>
+            <p className="mt-3">
+              風・雨・雪・雹などによる外壁・屋根の被害は、火災保険の<strong className="font-bold">風災補償</strong>の対象になる場合があります。診断は無料です。
+            </p>
           </div>
         </div>
       </section>
 
-      <section className="w-full py-14 md:py-20 bg-background-100">
-        <div className="w-full px-4 md:px-6 lg:px-8 max-w-6xl mx-auto">
-          <div className="text-center mb-10">
-            <span className="inline-block text-accent-500 text-base font-semibold tracking-widest uppercase mb-2">Flow</span>
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground-900">無理な営業は、一切しません。</h2>
+      {/* Steps：本物の <ol>。番号は Oswald の数字、上端に墨の太線 */}
+      <section className="bg-paper py-[var(--section-gap)]">
+        <div className="container">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-8">
+            <h2 className="lg:col-span-7">無理な営業は、一切しません。</h2>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <ol className="mt-12 grid grid-cols-1 lg:grid-cols-5 border-t-bar border-ink">
             {FLOW.map((f, i) => (
-              <div key={f.t} className="bg-background-50 rounded-xl border border-background-200/70 p-5 text-center">
-                <div className="w-12 h-12 mx-auto mb-3 flex items-center justify-center bg-primary-100 rounded-full text-primary-600 text-xl"><i className={f.icon}></i></div>
-                <div className="text-xs text-accent-500 font-bold mb-1">STEP {i + 1}</div>
-                <h3 className="font-heading text-base font-bold text-foreground-900 mb-1">{f.t}</h3>
-                <p className="text-sm text-foreground-600 leading-relaxed">{f.d}</p>
-              </div>
+              <li
+                key={f.t}
+                className="grid grid-cols-[3.5rem_minmax(0,1fr)] lg:grid-cols-1 gap-x-4 gap-y-3 py-6 border-b-hair border-paper-3 lg:border-b-0 lg:pt-8 lg:pb-0 lg:px-6 lg:border-l-hair lg:first:border-l-0 lg:first:pl-0"
+              >
+                <span aria-hidden="true" className="font-figure font-bold text-display-s leading-none text-ink tabular-nums">
+                  {i + 1}
+                </span>
+                <div>
+                  <h3>{f.t}</h3>
+                  <p className="mt-2 text-ink-2">{f.d}</p>
+                </div>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </section>
     </main>

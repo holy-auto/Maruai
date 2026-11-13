@@ -17,40 +17,72 @@ const GRADES = [
   { jp: '無機塗装', stars: 5, yen: 105 },
 ];
 
+// sections: Table（見出しを1〜5列、料金表を6〜12列、下に補足の2項）· SimulationSection（別担当）
 export default function PricePage() {
   return (
-    <main className="relative scroll-smooth">
+    <main className="relative">
       <PageHero
         eyebrow="Price"
         title="料金プラン"
         description="守りたい年数で選べる、明確な料金。シミュレーターでその場で概算も出せます。"
       />
 
-      <section className="w-full py-14 md:py-20 bg-background-50">
-        <div className="w-full px-4 md:px-6 lg:px-8 max-w-5xl mx-auto">
-          <div className="text-center mb-10">
-            <span className="inline-block text-accent-500 text-base font-semibold tracking-widest uppercase mb-2">Grade</span>
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground-900 mb-3">守りたい年数で、選べる。</h2>
-            <p className="text-sm text-foreground-500">※延床面積25坪・足場代込み・税抜価格／外壁塗装が基本。屋根・軒天井・破風板・樋・雨戸などの施工箇所はシミュレーターで追加できます。</p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
-            {GRADES.map((g) => (
-              <div key={g.jp} className={`rounded-xl border p-5 text-center ${g.stars === 5 ? 'border-primary-400 bg-primary-50' : 'border-background-200/70 bg-background-100'}`}>
-                <div className="font-heading font-bold text-base text-foreground-900 mb-1">{g.jp.replace('塗装', '')}</div>
-                <div className="text-accent-400 text-sm tracking-widest mb-2">{'★'.repeat(g.stars)}<span className="text-background-300">{'★'.repeat(5 - g.stars)}</span></div>
-                <div className="font-heading font-bold text-2xl text-primary-700">{g.yen}<span className="text-sm text-foreground-500">万円〜</span></div>
+      <section className="bg-paper pt-[var(--space-xl)] pb-[var(--section-gap)]">
+        <div className="container">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-10">
+            <h2 className="lg:col-span-5">守りたい年数で、選べる。</h2>
+
+            <div className="lg:col-span-7 min-w-0">
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse border-t-bar border-ink text-left">
+                  <caption className="visually-hidden">外壁塗装のグレード別料金</caption>
+                  <thead>
+                    <tr className="border-b-hair border-paper-3">
+                      <th scope="col" className="label py-3 pr-4">塗料</th>
+                      <th scope="col" className="label py-3 pr-4">グレード</th>
+                      <th scope="col" className="label py-3 text-right">料金</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {GRADES.map((g) => (
+                      <tr key={g.jp} className="border-b-hair border-paper-3">
+                        <th scope="row" className="py-4 pr-4 font-display font-bold text-title text-ink whitespace-nowrap">
+                          {g.jp.replace('塗装', '')}
+                        </th>
+                        <td className="py-4 pr-4 whitespace-nowrap">
+                          <span role="img" aria-label={`5段階中${g.stars}`} className="text-ink">
+                            {'★'.repeat(g.stars)}
+                            {'☆'.repeat(5 - g.stars)}
+                          </span>
+                        </td>
+                        <td className="py-4 text-right whitespace-nowrap text-ink">
+                          <span className="font-figure font-bold text-title tabular-nums">{g.yen}</span>
+                          <span className="ml-1 text-base">万円〜</span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            ))}
+              <p className="mt-6 text-ink-2 max-w-[38em]">
+                ※延床面積25坪・足場代込み・税抜価格／外壁塗装が基本。屋根・軒天井・破風板・樋・雨戸などの施工箇所はシミュレーターで追加できます。
+              </p>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-8">
-            <div className="bg-primary-50 rounded-xl border border-primary-200/60 p-6">
-              <h3 className="font-heading text-lg font-bold text-foreground-900 mb-2">高圧洗浄だけでもOK</h3>
-              <p className="text-base text-foreground-600 leading-relaxed">外構・駐車場・カーポートの高圧洗浄（100㎡まで）<span className="font-semibold text-primary-700">税込2万円</span>。塗装をご契約のお客様は無償で実施します。</p>
+          {/* 補足の2項：上端に墨の太線、2列 */}
+          <div className="mt-[var(--space-3xl)] grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-12">
+            <div className="md:col-span-6 rule-bar pt-6">
+              <h3>高圧洗浄だけでもOK</h3>
+              <p className="mt-3">
+                外構・駐車場・カーポートの高圧洗浄（100㎡まで）<strong className="font-bold">税込2万円</strong>。塗装をご契約のお客様は無償で実施します。
+              </p>
             </div>
-            <div className="bg-secondary-50 rounded-xl border border-secondary-200/60 p-6">
-              <h3 className="font-heading text-lg font-bold text-foreground-900 mb-2">火災保険の活用診断</h3>
-              <p className="text-base text-foreground-600 leading-relaxed">風・雨・雪・雹などによる外壁・屋根の被害は、火災保険の<span className="font-semibold text-secondary-800">風災補償</span>の対象になる場合があります。診断は無料です。</p>
+            <div className="md:col-span-6 rule-bar pt-6">
+              <h3>火災保険の活用診断</h3>
+              <p className="mt-3">
+                風・雨・雪・雹などによる外壁・屋根の被害は、火災保険の<strong className="font-bold">風災補償</strong>の対象になる場合があります。診断は無料です。
+              </p>
             </div>
           </div>
         </div>

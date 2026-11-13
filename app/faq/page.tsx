@@ -10,34 +10,35 @@ export const metadata: Metadata = {
   alternates: { canonical: '/faq' },
 };
 
+// 構成：Banner → Rows（質問ごとに細線で区切った開閉式の行。質問は左の7列、答えはその下）
 export default function FaqPage() {
   return (
     <main className="relative">
       <JsonLd data={faqJsonLd(FAQS)} />
       <PageHero
-        eyebrow="FAQ"
         title="よくある質問"
         description="お問い合わせの前に、よくいただくご質問をまとめました。"
       />
-      <section className="w-full py-14 md:py-20 bg-background-50">
-        <div className="w-full px-4 md:px-6 lg:px-8 max-w-3xl mx-auto space-y-3">
-          {FAQS.map((f) => (
-            <details
-              key={f.q}
-              className="group bg-background-100 rounded-xl border border-background-200/70 overflow-hidden"
-            >
-              <summary className="flex items-center justify-between gap-3 cursor-pointer list-none px-5 py-4 md:px-6 md:py-5 font-heading font-bold text-base md:text-lg text-foreground-900">
-                <span className="flex items-start gap-2">
-                  <i className="ri-question-line text-primary-500 mt-0.5"></i>
-                  {f.q}
-                </span>
-                <i className="ri-arrow-down-s-line text-foreground-400 text-xl transition-transform group-open:rotate-180"></i>
-              </summary>
-              <div className="px-5 pb-5 md:px-6 md:pb-6 text-base text-foreground-600 leading-relaxed border-t border-background-200/70 pt-4">
-                {f.a}
-              </div>
-            </details>
-          ))}
+      <section className="bg-paper pb-[calc(var(--section-gap-l)/2)]">
+        <div className="container grid grid-cols-1 md:grid-cols-12 gap-x-8">
+          <div className="md:col-span-10 divide-y divide-paper-3 border-b-hair border-paper-3">
+            {FAQS.map((f) => (
+              <details key={f.q} className="group">
+                <summary className="grid grid-cols-[minmax(0,1fr)_auto] md:grid-cols-10 items-start gap-x-8 py-6 cursor-pointer list-none [&::-webkit-details-marker]:hidden group/q">
+                  <span className="md:col-span-7 font-display font-bold text-title text-ink [font-feature-settings:'palt'] decoration-1 underline-offset-[0.2em] group-hover/q:underline">
+                    {f.q}
+                  </span>
+                  <span className="md:col-span-3 justify-self-end flex items-center h-[1.4em] text-title text-ink">
+                    <i className="ri-add-line text-2xl group-open:hidden" aria-hidden="true"></i>
+                    <i className="ri-subtract-line text-2xl hidden group-open:block" aria-hidden="true"></i>
+                  </span>
+                </summary>
+                <div className="grid grid-cols-1 md:grid-cols-10 gap-x-8 pb-8">
+                  <p className="md:col-span-7 text-base text-ink-2 max-w-[38em]">{f.a}</p>
+                </div>
+              </details>
+            ))}
+          </div>
         </div>
       </section>
     </main>

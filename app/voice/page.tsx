@@ -16,14 +16,15 @@ export const metadata: Metadata = {
 function Stars({ rating }: { rating: number }) {
   const r = Math.max(0, Math.min(5, Math.round(rating)));
   return (
-    <div className="flex items-center gap-0.5 text-lg" role="img" aria-label={`5段階中${r}の評価`}>
+    <div className="flex items-center gap-0.5 text-xl text-ink" role="img" aria-label={`5段階中${r}の評価`}>
       {Array.from({ length: 5 }, (_, i) => (
-        <i key={i} className={i < r ? 'ri-star-fill text-accent-400' : 'ri-star-line text-background-300'}></i>
+        <i key={i} className={i < r ? 'ri-star-fill' : 'ri-star-line'} aria-hidden="true"></i>
       ))}
     </div>
   );
 }
 
+// 構成：Banner → 準備中は Split（見出し 1〜6列、理由と行動 7〜12列）／掲載後は Grid（3列、上端に墨の太線、枠なし）
 export default async function VoicePage() {
   const voices = await getAllVoices().catch(() => []);
 
@@ -36,71 +37,53 @@ export default async function VoicePage() {
         ])}
       />
       <PageHero
-        eyebrow="Voice"
         title="お客様の声"
         description="工事を終えたお客様からいただいた、率直な感想です。"
       />
 
-      <section className="w-full py-14 md:py-20 bg-background-50">
-        <div className="w-full px-4 md:px-6 lg:px-8 max-w-6xl mx-auto">
+      <section className="bg-paper pb-[calc(var(--section-gap-l)/2)]">
+        <div className="container">
           {voices.length === 0 ? (
-            <div className="max-w-2xl mx-auto text-center bg-background-100 rounded-xl border border-background-200/70 p-8 md:p-10">
-              <div className="w-14 h-14 flex items-center justify-center bg-primary-50 rounded-full mx-auto mb-4 border border-primary-200/60">
-                <i className="ri-chat-smile-2-line text-primary-600 text-2xl"></i>
-              </div>
-              <h2 className="font-heading text-xl md:text-2xl font-bold text-foreground-900 mb-3">お客様の声は準備中です</h2>
-              <p className="text-base text-foreground-600 leading-relaxed mb-6">
-                工事を終えたお客様から、掲載のご了承をいただいたものから順にご紹介します。
-                それまでは、施工事例のビフォーアフターをご覧ください。
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Link href="/works" className="inline-flex items-center justify-center gap-1.5 px-6 py-3 rounded-full bg-primary-500 text-background-50 font-semibold hover:bg-primary-600 transition-colors">
-                  <i className="ri-image-line"></i>施工事例を見る
-                </Link>
-                <Link href="/contact" className="inline-flex items-center justify-center gap-1.5 px-6 py-3 rounded-full border border-background-300/60 text-foreground-700 font-medium hover:bg-primary-50 hover:text-primary-700 hover:border-primary-300 transition-colors">
-                  <i className="ri-mail-line"></i>お問い合わせ
-                </Link>
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-8 pt-[var(--space-lg)]">
+              <h2 className="md:col-span-6">お客様の声は準備中です</h2>
+              <div className="md:col-span-5 md:col-start-8">
+                <p className="text-base text-ink-2 max-w-[38em]">
+                  工事を終えたお客様から、掲載のご了承をいただいたものから順にご紹介します。
+                  それまでは、施工事例のビフォーアフターをご覧ください。
+                </p>
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <Link href="/works" className="btn btn--primary">
+                    <i className="ri-image-line text-xl" aria-hidden="true"></i>施工事例を見る
+                  </Link>
+                  <Link href="/contact" className="btn btn--secondary">
+                    <i className="ri-mail-line text-xl" aria-hidden="true"></i>お問い合わせ
+                  </Link>
+                </div>
               </div>
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
                 {voices.map((v) => (
-                  <article
-                    key={v.id}
-                    className="flex flex-col bg-background-100 rounded-xl border border-background-200/70 p-6"
-                  >
-                    <div className="flex items-center justify-between gap-3 mb-3">
+                  <article key={v.id} className="rule-bar flex flex-col pt-6">
+                    <div className="flex items-center justify-between gap-3">
                       <Stars rating={v.rating} />
-                      {v.service && (
-                        <span className="px-2.5 py-0.5 rounded-full bg-primary-100 text-primary-700 text-sm font-semibold whitespace-nowrap">
-                          {v.service}
-                        </span>
-                      )}
+                      {v.service && <p className="label whitespace-nowrap">{v.service}</p>}
                     </div>
-                    {v.headline && (
-                      <h2 className="font-heading text-lg font-bold text-foreground-900 mb-2 leading-snug">{v.headline}</h2>
-                    )}
-                    {v.body && (
-                      <p className="flex-1 text-base text-foreground-600 leading-relaxed">
-                        <i className="ri-double-quotes-l text-accent-400 mr-1"></i>
-                        {v.body}
-                      </p>
-                    )}
-                    <div className="mt-4 pt-4 border-t border-background-200/70 flex items-center justify-between gap-3">
-                      <p className="text-sm text-foreground-500">{v.who ?? 'お客様'}</p>
+                    {v.headline && <h2 className="mt-4 text-title">{v.headline}</h2>}
+                    {v.body && <p className="mt-3 flex-1 text-base text-ink-2">{v.body}</p>}
+                    <div className="mt-6 pt-4 border-t-hair border-paper-3 flex items-center justify-between gap-3">
+                      <p className="label">{v.who ?? 'お客様'}</p>
                       {v.work_id && (
-                        <Link href={`/works/${v.work_id}`} className="text-sm font-medium text-primary-700 hover:text-primary-800 whitespace-nowrap">
-                          施工事例を見る<i className="ri-arrow-right-s-line align-middle"></i>
+                        <Link href={`/works/${v.work_id}`} className="link text-sm font-medium whitespace-nowrap">
+                          施工事例を見る
                         </Link>
                       )}
                     </div>
                   </article>
                 ))}
               </div>
-              <p className="mt-8 text-sm text-foreground-500 text-center">
-                ※ 掲載しているお客様の声は、ご本人の了承を得て掲載しています。
-              </p>
+              <p className="label mt-12">※ 掲載しているお客様の声は、ご本人の了承を得て掲載しています。</p>
             </>
           )}
         </div>

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Noto_Sans_JP, Noto_Serif_JP } from 'next/font/google';
+import { Oswald, Zen_Kaku_Gothic_New } from 'next/font/google';
 import 'remixicon/fonts/remixicon.css';
 import './globals.css';
 import { Navbar } from '@/components/site/Navbar';
@@ -8,17 +8,18 @@ import { FloatingMaruai } from '@/components/feature/FloatingMaruai';
 import { JsonLd } from '@/components/JsonLd';
 import { localBusinessJsonLd, SITE, IS_PRODUCTION } from '@/lib/seo';
 
-const body = Noto_Sans_JP({
-  weight: ['400', '500', '600', '700'],
+// Hallmark Formwork：欧文・数字は Oswald 700、和文（見出し・本文）は Zen Kaku Gothic New。
+// ウェイトは 400 / 500 / 700 の3つまで（F19）。CSS 変数は app/tokens.css の --font-* が参照する。
+const oswald = Oswald({
+  weight: ['700'],
   subsets: ['latin'],
-  variable: '--font-body',
+  variable: '--font-oswald',
   display: 'swap',
-  preload: false,
 });
-const heading = Noto_Serif_JP({
-  weight: ['400', '600', '700'],
+const zen = Zen_Kaku_Gothic_New({
+  weight: ['400', '500', '700'],
   subsets: ['latin'],
-  variable: '--font-heading',
+  variable: '--font-zen',
   display: 'swap',
   preload: false,
 });
@@ -48,8 +49,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ja" className={`${body.variable} ${heading.variable}`}>
-      <body>
+    <html lang="ja" className={`${oswald.variable} ${zen.variable}`}>
+      <body className="grained">
         <Navbar />
         {children}
         <SiteFooter />

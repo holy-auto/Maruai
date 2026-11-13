@@ -11,25 +11,38 @@ export const metadata: Metadata = {
   alternates: { canonical: '/blog' },
 };
 
+// 構成：Banner → Index（日付 1〜2列、題と抜粋 3〜10列、行の間は細線）
 export default async function BlogPage() {
   const posts = await getPosts().catch(() => []);
   return (
     <main className="relative">
-      <PageHero eyebrow="Column" title="塗り替え前に、知っておきたいこと。" />
-      <section className="w-full py-14 md:py-20 bg-background-50">
-        <div className="w-full px-4 md:px-6 lg:px-8 max-w-3xl mx-auto">
+      <PageHero title="塗り替え前に、知っておきたいこと。" />
+      <section className="bg-paper pb-[calc(var(--section-gap)/2)]">
+        <div className="container">
           {posts.length === 0 ? (
-            <p className="text-center text-foreground-500">記事は準備中です。</p>
+            <p className="text-base text-ink-2">記事は準備中です。</p>
           ) : (
-            <div className="grid gap-4">
+            <ul className="divide-y divide-paper-3 border-b-hair border-paper-3">
               {posts.map((p) => (
-                <Link key={p.slug} href={`/blog/${p.slug}`} className="block bg-background-100 rounded-xl border border-background-200/70 p-6 hover:border-primary-300 transition-colors">
-                  <p className="text-sm text-foreground-500">{new Date(p.published_at).toLocaleDateString('ja-JP')}</p>
-                  <h2 className="font-heading text-lg md:text-xl font-bold text-foreground-900 my-1">{p.title}</h2>
-                  {p.excerpt && <p className="text-base text-foreground-600 leading-relaxed">{p.excerpt}</p>}
-                </Link>
+                <li key={p.slug}>
+                  <Link
+                    href={`/blog/${p.slug}`}
+                    className="group grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-2 py-6 md:py-8 text-ink no-underline"
+                  >
+                    <time
+                      dateTime={p.published_at}
+                      className="md:col-span-2 font-figure text-base text-ink-2 tabular-nums md:leading-[2.2]"
+                    >
+                      {new Date(p.published_at).toLocaleDateString('ja-JP')}
+                    </time>
+                    <div className="md:col-span-8">
+                      <h2 className="text-title decoration-1 underline-offset-[0.2em] group-hover:underline">{p.title}</h2>
+                      {p.excerpt && <p className="mt-2 text-base text-ink-2 max-w-[38em]">{p.excerpt}</p>}
+                    </div>
+                  </Link>
+                </li>
               ))}
-            </div>
+            </ul>
           )}
         </div>
       </section>

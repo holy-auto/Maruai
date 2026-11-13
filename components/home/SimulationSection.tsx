@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { updateSimulationEstimate } from "@/hooks/useSimulationEstimate";
 
@@ -47,6 +47,16 @@ function calculateEstimate(
   return Math.round(areaCost * (1 + surchargeTotal));
 }
 
+function Stars({ count }: { count: number }) {
+  return (
+    <span className="inline-flex items-center gap-0.5 text-sm text-ink" role="img" aria-label={`耐久性 5段階中${count}`}>
+      {Array.from({ length: 5 }).map((_, i) => (
+        <i key={i} className={i < count ? "ri-star-fill" : "ri-star-line text-muted"} aria-hidden="true"></i>
+      ))}
+    </span>
+  );
+}
+
 export default function SimulationSection() {
   const router = useRouter();
   const [tsubo, setTsubo] = useState<number>(25);
@@ -58,16 +68,11 @@ export default function SimulationSection() {
     toi: false,
     amado: false,
   });
-  const [showResult, setShowResult] = useState(false);
 
   const estimate = useMemo(
     () => calculateEstimate(tsubo, plan, selectedParts),
     [tsubo, plan, selectedParts]
   );
-
-  useEffect(() => {
-    setShowResult(true);
-  }, []);
 
   useEffect(() => {
     updateSimulationEstimate(estimate);
@@ -104,236 +109,160 @@ export default function SimulationSection() {
     }
   };
 
+  const planName = planOptions.find((p) => p.key === plan)?.name;
+  const partsLabels = partsOptions.filter((p) => selectedParts[p.key]).map((p) => p.label);
+
   return (
-    <section id="simulation" className="w-full py-14 md:py-20 bg-background-50">
-      <div className="w-full px-4 md:px-6 lg:px-8 max-w-6xl mx-auto">
-        <div className="text-center mb-10 md:mb-14">
-          <span className="inline-block text-accent-500 text-base font-semibold tracking-widest uppercase mb-2">
-            Price Simulation
-          </span>
-          <h4 className="font-heading text-3xl md:text-5xl font-bold text-foreground-900 mb-3">
-            <a href="#simulation">塗装料金シミュレーション</a>
-          </h4>
-
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-100 border border-primary-200 mb-4">
-            <div className="w-5 h-5 flex items-center justify-center bg-primary-500 rounded-full">
-              <i className="ri-check-line text-background-50 text-xs"></i>
-            </div>
-            <span className="text-primary-700 text-sm md:text-base font-bold">
-              完全自社施工・中間マージンゼロ
-            </span>
+    <section id="simulation" className="bg-paper py-[calc(var(--section-gap)/2)]">
+      <div className="container">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-6 items-end">
+          <h2 className="md:col-span-6">あなたのお家はいくら？</h2>
+          <div className="md:col-span-6">
+            <p className="lead">
+              坪数とプランを選ぶだけ。おおよその料金がその場ですぐにわかります。訪問販売の高額見積もりと比べてみてください。
+            </p>
+            <p className="mt-3 label">無料・登録不要・30秒で完了</p>
           </div>
-
-          <p className="text-foreground-600 text-base md:text-lg max-w-2xl mx-auto mb-6">
-            簡単な入力で、<strong>おおよその料金がすぐにわかります</strong>。
-            <br />
-            訪問販売の<strong>高額見積もり</strong>と比べてみてください。
-          </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-          <div className="bg-background-100 rounded-xl p-5 md:p-6 border border-background-200/70">
-            <h3 className="font-heading text-lg md:text-xl font-bold text-foreground-900 mb-5 flex items-center gap-2">
-              <span className="w-8 h-8 flex items-center justify-center bg-primary-100 rounded-full text-primary-600">
-                <i className="ri-home-line text-sm"></i>
-              </span>
-              1. 延床面積を選択
-            </h3>
-            <div className="px-2 py-4">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-base font-bold text-foreground-700">10坪</span>
-                <span className="text-4xl font-heading font-bold text-primary-600">{tsubo}坪</span>
-                <span className="text-base font-bold text-foreground-700">100坪</span>
+        <div className="mt-[var(--space-2xl)] grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-10 items-start">
+          {/* 手順：本当に順番がある作業なので <ol> */}
+          <ol className="lg:col-span-7 border-t-bar border-ink [counter-reset:step]">
+            <li className="py-8 border-b border-paper-3 [counter-increment:step]">
+              <h3 className="flex items-baseline gap-3 before:content-[counter(step)] before:font-figure before:text-3xl">
+                延床面積を選択
+              </h3>
+              <div className="mt-6">
+                <div className="flex items-end justify-between gap-4">
+                  <span className="label">10坪</span>
+                  <output htmlFor="tsubo-range" className="font-figure font-bold text-[clamp(3rem,5vw,4.5rem)] leading-none text-ink tabular-nums">
+                    {tsubo}
+                    <span className="font-display text-2xl ml-1">坪</span>
+                  </output>
+                  <span className="label">100坪</span>
+                </div>
+                <input
+                  id="tsubo-range"
+                  type="range"
+                  min={10}
+                  max={100}
+                  step={1}
+                  value={tsubo}
+                  onChange={(e) => setTsubo(Number(e.target.value))}
+                  aria-label="延床面積（坪）"
+                  className="mt-4 w-full h-3 cursor-pointer"
+                  style={{ accentColor: "var(--color-accent-deep)" }}
+                />
+                <div className="flex justify-between mt-2 label tabular-nums" aria-hidden="true">
+                  <span>10</span>
+                  <span>30</span>
+                  <span>50</span>
+                  <span>70</span>
+                  <span>90</span>
+                  <span>100</span>
+                </div>
+                <p className="mt-3 label">※スライドバーをドラッグして面積を調整してください</p>
               </div>
-              <input
-                type="range"
-                min={10}
-                max={100}
-                step={1}
-                value={tsubo}
-                onChange={(e) => setTsubo(Number(e.target.value))}
-                className="w-full h-3 rounded-full appearance-none cursor-pointer bg-background-200 accent-primary-600 hover:accent-primary-500"
-                style={{ accentColor: 'var(--accent-color, #15803d)' }}
-              />
-              <div className="flex justify-between mt-2 px-1">
-                <span className="text-xs text-foreground-400">10</span>
-                <span className="text-xs text-foreground-400">30</span>
-                <span className="text-xs text-foreground-400">50</span>
-                <span className="text-xs text-foreground-400">70</span>
-                <span className="text-xs text-foreground-400">90</span>
-                <span className="text-xs text-foreground-400">100</span>
-              </div>
-            </div>
-            <p className="mt-3 text-sm text-foreground-500">
-              ※スライドバーをドラッグして面積を調整してください
-            </p>
-          </div>
+            </li>
 
-          <div className="bg-background-100 rounded-xl p-5 md:p-6 border border-background-200/70">
-            <h3 className="font-heading text-lg md:text-xl font-bold text-foreground-900 mb-5 flex items-center gap-2">
-              <span className="w-8 h-8 flex items-center justify-center bg-primary-100 rounded-full text-primary-600">
-                <i className="ri-brush-line text-sm"></i>
-              </span>
-              2. 塗装プランを選択
-            </h3>
-            <div className="space-y-2">
-              {planOptions.map((p) => (
-                <button
-                  key={p.key}
-                  onClick={() => setPlan(p.key)}
-                  className={`w-full flex items-center justify-between px-4 py-3.5 rounded-lg border transition-all text-left ${
-                    plan === p.key
-                      ? "border-primary-400 bg-primary-50"
-                      : "border-background-200/70 bg-background-50 hover:border-primary-200"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                        plan === p.key ? "border-primary-500" : "border-foreground-300"
+            <li className="py-8 border-b border-paper-3 [counter-increment:step]">
+              <h3 className="flex items-baseline gap-3 before:content-[counter(step)] before:font-figure before:text-3xl">
+                塗装プランを選択
+              </h3>
+              <ul className="mt-6 border-t border-paper-3">
+                {planOptions.map((p) => {
+                  const active = plan === p.key;
+                  return (
+                    <li key={p.key}>
+                      <button
+                        type="button"
+                        onClick={() => setPlan(p.key)}
+                        aria-pressed={active}
+                        className={`w-full grid grid-cols-[auto_1fr_auto] items-center gap-4 px-4 py-4 min-h-[64px] text-left border-b border-paper-3 transition-colors duration-short ${
+                          active ? "bg-plate outline outline-2 outline-ink -outline-offset-2" : "hover:bg-paper-2"
+                        }`}
+                      >
+                        <span
+                          className={`w-5 h-5 border-2 border-ink flex items-center justify-center ${active ? "bg-ink" : ""}`}
+                          aria-hidden="true"
+                        >
+                          {active && <span className="w-2 h-2 bg-plate-ink"></span>}
+                        </span>
+                        <span>
+                          <span className="block text-lg font-bold text-ink">{p.name}</span>
+                          <span className="label">25坪基準 {p.basePrice}万円（税抜）</span>
+                        </span>
+                        <Stars count={p.stars} />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </li>
+
+            <li className="py-8 border-b border-paper-3 [counter-increment:step]">
+              <h3 className="flex items-baseline gap-3 before:content-[counter(step)] before:font-figure before:text-3xl">
+                施工箇所を選択
+              </h3>
+              <p className="mt-3 label">外壁塗装は基本料金に含まれています。追加で施工したい箇所をチェックしてください。</p>
+              <div className="mt-5 flex items-center justify-between gap-3 px-4 py-3 bg-paper-2">
+                <span className="inline-flex items-center gap-3 text-base font-bold text-ink">
+                  <i className="ri-checkbox-line text-xl" aria-hidden="true"></i>
+                  外壁塗装（基本）
+                </span>
+                <span className="label">込み</span>
+              </div>
+              <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {partsOptions.map((p) => {
+                  const isChecked = selectedParts[p.key];
+                  return (
+                    <button
+                      key={p.key}
+                      type="button"
+                      onClick={() => togglePart(p.key)}
+                      aria-pressed={isChecked}
+                      className={`flex items-center gap-3 px-3 py-3 min-h-[56px] text-left border-2 transition-colors duration-short ${
+                        isChecked ? "border-ink bg-plate" : "border-paper-3 hover:border-ink"
                       }`}
                     >
-                      {plan === p.key && (
-                        <div className="w-2.5 h-2.5 rounded-full bg-primary-500"></div>
-                      )}
-                    </div>
-                    <div>
-                      <span className="block text-base md:text-lg font-semibold text-foreground-800">
-                        {p.name}
+                      <i className={`text-xl ${isChecked ? "ri-checkbox-fill" : "ri-checkbox-blank-line"}`} aria-hidden="true"></i>
+                      <span>
+                        <span className="block text-base font-bold text-ink leading-tight">{p.label}</span>
+                        <span className="label tabular-nums">+{Math.round(p.surcharge * 100)}%</span>
                       </span>
-                      <span className="text-sm text-foreground-500">
-                        25坪基準 {p.basePrice}万円（税抜）
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-0.5">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <i
-                        key={i}
-                        className={`text-xs ${
-                          i < p.stars ? "ri-star-fill text-accent-400" : "ri-star-line text-background-300"
-                        }`}
-                      ></i>
-                    ))}
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-6 bg-background-100 rounded-xl p-5 md:p-6 border border-background-200/70">
-          <h3 className="font-heading text-lg md:text-xl font-bold text-foreground-900 mb-2 flex items-center gap-2">
-            <span className="w-8 h-8 flex items-center justify-center bg-primary-100 rounded-full text-primary-600">
-              <i className="ri-home-gear-line text-sm"></i>
-            </span>
-            3. 施工箇所を選択
-          </h3>
-          <p className="text-xs text-foreground-500 mb-5">
-            外壁塗装は基本料金に含まれています。追加で施工したい箇所をチェックしてください。
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
-            <div className="col-span-2 sm:col-span-3 lg:col-span-5 flex items-center gap-3 px-3 sm:px-4 py-3 bg-primary-50 rounded-lg border border-primary-200 mb-1">
-              <div className="w-6 h-6 rounded border-2 border-primary-500 bg-primary-500 flex items-center justify-center">
-                <i className="ri-check-line text-background-50 text-sm"></i>
+                    </button>
+                  );
+                })}
               </div>
-              <span className="text-base md:text-lg font-semibold text-foreground-800">外壁塗装（基本）</span>
-              <span className="ml-auto text-sm text-foreground-500 whitespace-nowrap">込み</span>
+              <p className="mt-4 label">※各施工箇所の割増率は25坪あたりの目安です。足場代は基本料金に含まれています。</p>
+            </li>
+          </ol>
+
+          {/* 概算：選ぶあいだも見えるよう、右に留める */}
+          <div className="lg:col-span-5 lg:sticky lg:top-[var(--space-lg)] bg-ink text-plate-ink grained grained--light p-6 md:p-8" aria-live="polite">
+            <p className="text-base font-medium text-plate-ink">おおよその料金（税抜）</p>
+            <p className="mt-2 font-figure font-bold leading-none tabular-nums text-plate-ink">
+              <span className="text-[clamp(4.5rem,8vw,7.5rem)]">{estimate}</span>
+              <span className="font-display text-3xl ml-1">万円</span>
+            </p>
+            <p className="mt-4 text-base text-plate-ink">
+              {tsubo}坪 ／ {planName}
+              {partsLabels.length > 0 && <> ＋ {partsLabels.join("・")}</>}
+            </p>
+            <p className="mt-5 pt-5 border-t border-[color-mix(in_oklab,var(--color-plate-ink)_30%,transparent)] text-base font-bold text-plate-ink">
+              中間マージンゼロ。この金額が100%職人の手に届きます
+            </p>
+            <p className="mt-2 text-sm text-plate-ink">※現地調査後の正式見積もりとは異なる場合があります。足場代込み。</p>
+            <div className="mt-6 flex flex-col gap-3">
+              <button type="button" onClick={handleRequestEstimate} className="btn btn--primary w-full">
+                <i className="ri-file-list-3-line text-xl" aria-hidden="true"></i>
+                この内容で詳細見積もりを依頼する
+              </button>
+              <a href="tel:029-886-7913" className="btn btn--on-ink w-full">
+                <i className="ri-phone-line text-xl" aria-hidden="true"></i>
+                電話で相談する
+              </a>
             </div>
-            {partsOptions.map((p) => {
-              const isChecked = selectedParts[p.key];
-              return (
-                <button
-                  key={p.key}
-                  onClick={() => togglePart(p.key)}
-                  className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3 sm:py-3.5 rounded-lg border transition-all ${
-                    isChecked
-                      ? "border-primary-400 bg-primary-50"
-                      : "border-background-200/70 bg-background-50 hover:border-primary-200"
-                  }`}
-                >
-                  <div
-                    className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${
-                      isChecked ? "bg-primary-500 border-primary-500" : "border-foreground-300"
-                    }`}
-                  >
-                    {isChecked && <i className="ri-check-line text-background-50 text-sm"></i>}
-                  </div>
-                  <div className="text-left">
-                    <span className="block text-sm sm:text-base font-semibold text-foreground-800 leading-tight">
-                      {p.label}
-                    </span>
-                    <span className="text-sm text-primary-600 font-medium">
-                      +{Math.round(p.surcharge * 100)}%
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-          <p className="mt-4 text-sm text-foreground-500">
-            ※各施工箇所の割増率は25坪あたりの目安です。足場代は基本料金に含まれています。
-          </p>
-        </div>
-
-        <div
-          className={`mt-4 md:mt-6 bg-primary-600 rounded-xl p-6 md:p-8 text-center transition-all duration-500 ${
-            showResult ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          }`}
-        >
-          <p className="text-primary-200 text-base md:text-lg font-medium mb-2">
-            おおよその料金（税抜）
-          </p>
-          <div className="flex items-baseline justify-center gap-1">
-            <span className="font-heading text-5xl sm:text-6xl md:text-8xl font-bold text-background-50">
-              {estimate}
-            </span>
-            <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-background-100">万円</span>
-          </div>
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-primary-200 text-base">
-            <span className="px-3 py-1 bg-primary-700/50 rounded-full">
-              {tsubo}坪
-            </span>
-            <span className="px-3 py-1 bg-primary-700/50 rounded-full">
-              {planOptions.find((p) => p.key === plan)?.name}
-            </span>
-            {partsOptions
-              .filter((p) => selectedParts[p.key])
-              .map((p) => (
-                <span key={p.key} className="px-3 py-1 bg-primary-700/50 rounded-full">
-                  {p.label}
-                </span>
-              ))}
-          </div>
-
-          <div className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/25">
-            <div className="w-6 h-6 flex items-center justify-center bg-accent-400 rounded-full">
-              <i className="ri-check-line text-background-50 text-xs"></i>
-            </div>
-            <span className="text-background-50 text-sm md:text-base font-bold">
-              中間マージンゼロ！この金額が100%職人の手に届きます
-            </span>
-          </div>
-
-          <p className="mt-3 text-sm text-primary-300">
-            ※現地調査後の正式見積もりとは異なる場合があります。足場代込み。
-          </p>
-
-          <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <button
-              onClick={handleRequestEstimate}
-              className="inline-flex items-center justify-center gap-2 px-5 sm:px-8 py-4 rounded-full bg-accent-500 text-background-50 font-bold text-base sm:text-lg hover:bg-accent-600 transition-all"
-            >
-              <i className="ri-file-list-3-line"></i>
-              この内容で詳細見積もりを依頼する
-            </button>
-            <a
-              href="tel:029-886-7913"
-              className="inline-flex items-center justify-center gap-2 px-5 sm:px-8 py-4 rounded-full bg-white/15 text-background-50 font-semibold text-base sm:text-lg border border-white/30 hover:bg-white/25 transition-all"
-            >
-              <i className="ri-phone-line"></i>
-              電話で相談する
-            </a>
           </div>
         </div>
       </div>

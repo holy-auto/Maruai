@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 
 const navLinks = [
@@ -12,19 +12,11 @@ const navLinks = [
   { label: "お問い合わせ", href: "/#contact" },
 ];
 
+// nav: masthead（社名を中央に大きく、太い墨の線の下にリンクの列）
 export function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   // ハッシュ対象が描画されるまで数回リトライしてからスクロール（クライアント遷移の速度差に依存しないため）
   const scrollToHash = (hash: string, attempts = 0) => {
@@ -57,103 +49,89 @@ export function Navbar() {
     }
   };
 
-  const isHomeTop = pathname === "/" && !scrolled;
-  const navBgTransparent = isHomeTop;
-  const textColorClass = navBgTransparent ? "text-background-50" : "text-foreground-900";
-  const linkColorClass = navBgTransparent
-    ? "text-background-100 hover:text-background-50 hover:bg-white/10"
-    : "text-foreground-700 hover:text-primary-600 hover:bg-primary-50";
-  const hamburgerColorClass = navBgTransparent ? "text-background-50" : "text-foreground-800";
-
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        navBgTransparent
-          ? "bg-transparent"
-          : "bg-background-50/95 backdrop-blur-md border-b border-background-200/70"
-      }`}
-    >
-    <nav>
-      <div className="w-full px-4 md:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 md:h-20">
+    <header className="bg-paper">
+      <div className="container">
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 min-h-[64px] md:min-h-[72px]">
+          <p className="label hidden md:block">阿見町の外壁・屋根塗装</p>
           <a
             href="/"
             onClick={(e) => handleNavClick(e, "/")}
-            className="flex items-center gap-2 whitespace-nowrap"
+            aria-label="丸愛装業 トップへ"
+            className="col-start-1 md:col-start-2 justify-self-start md:justify-self-center font-display font-bold text-[1.75rem] md:text-[2.25rem] leading-none tracking-normal text-ink no-underline whitespace-nowrap"
           >
-            <div className="w-8 h-8 flex items-center justify-center bg-primary-600 rounded-md">
-              <i className="ri-home-smile-line text-background-50 text-lg"></i>
-            </div>
-            <div className="flex flex-col items-start leading-none">
-              <span
-                className={`font-heading font-bold text-xl md:text-2xl tracking-wide transition-colors ${textColorClass}`}
-              >
-                丸愛装業
-              </span>
-              <span
-                className={`text-[10px] md:text-xs font-medium tracking-wider mt-0.5 transition-colors ${navBgTransparent ? "text-background-100/80" : "text-foreground-500"}`}
-              >
-                阿見町の外壁・屋根塗装専門店
-              </span>
-            </div>
+            丸愛装業
           </a>
-
-          <div className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={(e) => handleNavClick(e, link.href)}
-                className={`px-3 py-2 rounded-md text-base font-medium transition-colors whitespace-nowrap ${linkColorClass}`}
-              >
-                {link.label}
-              </a>
-            ))}
+          <div className="col-start-3 flex items-center justify-end gap-6">
             <a
               href="/#contact"
               onClick={(e) => handleNavClick(e, "/#contact")}
-              className="ml-3 px-5 py-2.5 rounded-full bg-primary-500 text-background-50 text-base font-semibold hover:bg-primary-600 transition-colors whitespace-nowrap"
+              className="link hidden md:inline text-[0.9375rem] font-medium whitespace-nowrap"
             >
               無料見積もり
             </a>
+            <button
+              type="button"
+              className="md:hidden inline-flex items-center justify-center w-12 h-12 border-2 border-ink bg-paper-2 text-ink"
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label="メニュー"
+              aria-expanded={mobileOpen}
+              aria-controls="site-menu"
+            >
+              <i className={`text-2xl ${mobileOpen ? "ri-close-line" : "ri-menu-line"}`} aria-hidden="true"></i>
+            </button>
           </div>
-
-          <button
-            className="md:hidden w-10 h-10 flex items-center justify-center"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="メニュー"
-          >
-            <i
-              className={`text-2xl ${hamburgerColorClass} ${mobileOpen ? "ri-close-line" : "ri-menu-line"}`}
-            ></i>
-          </button>
         </div>
       </div>
 
-      {mobileOpen && (
-        <div className="md:hidden bg-background-50/98 backdrop-blur-md border-b border-background-200/70">
-          <div className="px-4 py-3 space-y-1">
+      <nav aria-label="サイト内" className="border-t-bar border-ink">
+        <div className="container hidden md:block">
+          <ul className="flex items-center justify-center gap-x-8 lg:gap-x-10 min-h-[44px]">
             {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={(e) => handleNavClick(e, link.href)}
-                className="block px-3 py-3 rounded-md text-base font-medium text-foreground-700 hover:text-primary-600 hover:bg-primary-50"
-              >
-                {link.label}
-              </a>
+              <li key={link.href}>
+                <a
+                  href={link.href}
+                  onClick={(e) => handleNavClick(e, link.href)}
+                  aria-current={link.href === pathname ? "page" : undefined}
+                  className="link text-[0.9375rem] font-medium no-underline hover:underline whitespace-nowrap aria-[current=page]:underline"
+                >
+                  {link.label}
+                </a>
+              </li>
             ))}
-            <a
-              href="/#contact"
-              onClick={(e) => handleNavClick(e, "/#contact")}
-              className="block mt-2 px-5 py-3 rounded-full bg-primary-500 text-background-50 text-base font-semibold text-center"
-            >
-              無料見積もり
-            </a>
-          </div>
+          </ul>
         </div>
-      )}
-    </nav>
+
+        {mobileOpen && (
+          <div id="site-menu" className="md:hidden container pb-6">
+            <ul className="divide-y divide-paper-3">
+              {navLinks.map((link) => (
+                <li key={link.href}>
+                  <a
+                    href={link.href}
+                    onClick={(e) => handleNavClick(e, link.href)}
+                    className="flex items-center min-h-[52px] text-base font-medium text-ink no-underline"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-4 grid gap-3">
+              <a
+                href="/#contact"
+                onClick={(e) => handleNavClick(e, "/#contact")}
+                className="btn btn--secondary w-full"
+              >
+                無料見積もり
+              </a>
+              <a href="tel:029-886-7913" className="btn btn--secondary w-full font-figure">
+                029-886-7913
+              </a>
+            </div>
+          </div>
+        )}
+      </nav>
     </header>
   );
 }

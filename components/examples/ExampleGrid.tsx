@@ -1,7 +1,164 @@
 'use client';
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import type { Example } from "@/lib/examples";
+
+// composition: Index（施工事例を一行ずつ。先頭の一件は大きく、写真を横に置く）
+
+export type Side = "before" | "after";
+
+const SIDE_LABEL: Record<Side, string> = { before: "施工前", after: "施工後" };
+
+/** 施工前・施工後の写真。data-slot の中に置くので白黒の処理がかかる */
+export function BeforeAfterPhoto({
+  example,
+  side,
+  slot,
+  title,
+  className = "",
+  priority = false,
+}: {
+  example: Example;
+  side: Side;
+  slot: string;
+  title?: string;
+  className?: string;
+  priority?: boolean;
+}) {
+  const src = side === "before" ? example.beforeImage : example.afterImage;
+  return (
+    <div
+      className={`photo ${className}`}
+      data-slot={slot}
+      data-alt={`${example.title}の${SIDE_LABEL[side]}の写真`}
+    >
+      {src ? (
+        <img
+          key={src}
+          src={src}
+          width={1200}
+          height={900}
+          alt={`${example.title} ${SIDE_LABEL[side]}`}
+          title={title}
+          loading={priority ? undefined : "lazy"}
+          fetchPriority={priority ? "high" : undefined}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+/** 施工前・施工後の切り替え（押し込み式の二つのボタン） */
+export function BeforeAfterToggle({
+  side,
+  onChange,
+  label,
+}: {
+  side: Side;
+  onChange: (side: Side) => void;
+  label: string;
+}) {
+  return (
+    <div role="group" aria-label={label} className="inline-flex border-2 border-ink">
+      {(["before", "after"] as const).map((s) => {
+        const on = side === s;
+        return (
+          <button
+            key={s}
+            type="button"
+            aria-pressed={on}
+            onClick={() => onChange(s)}
+            className={`min-h-[44px] px-5 font-medium whitespace-nowrap cursor-pointer ${
+              on
+                ? "bg-ink text-plate-ink"
+                : "bg-paper-2 text-ink hover:bg-paper-3 active:translate-y-px"
+            }`}
+          >
+            {SIDE_LABEL[s]}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/** 工事の事実（施工場所・延床面積・施工期間・施工カテゴリ） */
+export function WorkFacts({ example, className = "" }: { example: Example; className?: string }) {
+  const rows: { term: string; value: string; figure?: boolean }[] = [
+    { term: "施工場所", value: example.location },
+    { term: "延床面積", value: example.area, figure: true },
+    { term: "施工期間", value: example.period, figure: true },
+    { term: "施工カテゴリ", value: example.category },
+  ];
+  return (
+    <dl className={className}>
+      {rows.map((row) => (
+        <div
+          key={row.term}
+          className="grid grid-cols-[7em_minmax(0,1fr)] gap-x-4 py-2 border-t-hair border-paper-3 first:border-t-0 first:pt-0"
+        >
+          <dt className="label pt-[2px]">{row.term}</dt>
+          <dd className={`m-0 text-base text-ink ${row.figure ? "font-figure tabular-nums" : ""}`}>
+            {row.value}
+          </dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+/** 使用塗料・特徴 */
+export function WorkFeatures({ features, className = "" }: { features: string[]; className?: string }) {
+  if (features.length === 0) return null;
+  return (
+    <ul role="list" aria-label="使用塗料・特徴" className={`flex flex-wrap gap-x-5 gap-y-1 ${className}`}>
+      {features.map((feat) => (
+        <li key={feat} className="inline-flex items-center gap-1.5 text-base text-ink">
+          <i className="ri-check-line text-base" aria-hidden="true"></i>
+          {feat}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** お客様の声（引用） */
+function WorkTestimonial({ text }: { text: string }) {
+  if (!text) return null;
+  return (
+    <figure className="m-0 border-l-2 border-ink pl-4">
+      <blockquote className="m-0">
+        <p className="text-base text-ink-2">{text}</p>
+      </blockquote>
+      <figcaption className="label mt-2">お客様の声</figcaption>
+    </figure>
+  );
+}
+
+/** 事例の詳細へのリンク（実際の <a>。修飾キー付きのクリックはブラウザに任せる） */
+function WorkLink({
+  id,
+  onNavigate,
+  children,
+}: {
+  id: string;
+  onNavigate: (id: string) => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <a
+      href={`/works/${id}`}
+      onClick={(e) => {
+        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        e.preventDefault();
+        onNavigate(id);
+      }}
+      className="no-underline hover:underline"
+    >
+      {children}
+    </a>
+  );
+}
 
 export default function ExampleGrid({
   examples,
@@ -13,8 +170,8 @@ export default function ExampleGrid({
   const commonCategories = categories;
   const [activeCategory, setActiveCategory] = useState("すべて");
   const [visibleCount, setVisibleCount] = useState(6);
-  const [currentSlide, setCurrentSlide] = useState<Record<string, "before" | "after">>(() => {
-    const initial: Record<string, "before" | "after"> = {};
+  const [currentSlide, setCurrentSlide] = useState<Record<string, Side>>(() => {
+    const initial: Record<string, Side> = {};
     examples.forEach((ex) => {
       initial[ex.id] = "after";
     });
@@ -31,19 +188,15 @@ export default function ExampleGrid({
 
   useEffect(() => {
     setVisibleCount(6);
-    const initial: Record<string, "before" | "after"> = {};
+    const initial: Record<string, Side> = {};
     examples.forEach((ex) => {
       initial[ex.id] = "after";
     });
     setCurrentSlide(initial);
   }, [activeCategory]);
 
-  const toggleSlide = (e: React.MouseEvent, id: string) => {
-    e.stopPropagation();
-    setCurrentSlide((prev) => ({
-      ...prev,
-      [id]: prev[id] === "before" ? "after" : "before",
-    }));
+  const setSlide = (id: string, side: Side) => {
+    setCurrentSlide((prev) => ({ ...prev, [id]: side }));
   };
 
   const goToDetail = (id: string) => {
@@ -51,160 +204,134 @@ export default function ExampleGrid({
     window.scrollTo(0, 0);
   };
 
+  const photoTitle = (ex: Example) => `茨城県 ${ex.location} 塗装施工事例 丸愛装業 - ${ex.title}`;
+
   return (
-    <section id="examples-grid" className="w-full py-14 md:py-20 bg-background-100">
-      <div className="w-full px-4 md:px-6 lg:px-8 max-w-6xl mx-auto">
-        <div className="text-center mb-8 md:mb-10">
-          <span className="inline-block text-accent-500 text-base font-semibold tracking-widest uppercase mb-2">
-            Our works
-          </span>
-          <h4 className="font-heading text-3xl md:text-5xl font-bold text-foreground-900 mb-3">
-            <a href="#examples-grid">施工事例一覧</a>
-          </h4>
-          <p className="text-foreground-600 text-base md:text-lg max-w-2xl mx-auto">
-            お客様にご満足いただいた<strong>施工事例</strong>の数々です。
-            <strong>ビフォーアフター</strong>で仕上がりの違いをぜひご確認ください。
+    <section id="examples-grid" className="bg-paper">
+      <div className="container pt-[var(--space-2xl)] pb-[var(--section-gap)]">
+        {/* 見出し（1〜5列）と一文（7〜12列）、下端をそろえる */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-4 items-end">
+          <h2 className="md:col-span-5 text-section">
+            <a href="#examples-grid" className="no-underline hover:underline">施工事例一覧</a>
+          </h2>
+          <p className="md:col-span-6 md:col-start-7 text-lg text-ink-2 max-w-[34em]">
+            お客様にご満足いただいた施工事例の数々です。ビフォーアフターで仕上がりの違いをぜひご確認ください。
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-2 justify-center mb-8 md:mb-10">
-          {commonCategories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-2 rounded-full text-base font-medium whitespace-nowrap transition-all duration-200 cursor-pointer ${
-                activeCategory === cat
-                  ? "bg-primary-500 text-background-50"
-                  : "bg-background-50 text-foreground-700 border border-background-300/60 hover:bg-primary-50 hover:text-primary-700 hover:border-primary-300"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-          {displayedExamples.map((example) => {
-            const CardWrapper = ({ example: ex }: { example: Example }) => {
-              const [visible, setVisible] = useState(false);
-              const ref = useRef<HTMLDivElement>(null);
-
-              useEffect(() => {
-                const observer = new IntersectionObserver(
-                  ([entry]) => {
-                    if (entry.isIntersecting) {
-                      setVisible(true);
-                      observer.disconnect();
-                    }
-                  },
-                  { threshold: 0.1 }
-                );
-                if (ref.current) observer.observe(ref.current);
-                return () => observer.disconnect();
-              }, []);
-
-              return (
-                <div
-                  ref={ref}
-                  onClick={() => goToDetail(ex.id)}
-                  className={`bg-background-50 rounded-xl overflow-hidden border border-background-200/70 hover:border-primary-300 transition-all duration-700 cursor-pointer ${
-                    visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-                  }`}
-                >
-                  <div className="relative h-48 md:h-52 overflow-hidden group cursor-pointer" onClick={(e) => toggleSlide(e, ex.id)}>
-                    <img
-                      src={currentSlide[ex.id] === "before" ? ex.beforeImage : ex.afterImage}
-                      alt={currentSlide[ex.id] === "before" ? `${ex.title} 施工前` : `${ex.title} 施工後`}
-                      title={`茨城県 ${ex.location} 塗装施工事例 丸愛装業 - ${ex.title}`}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
-                    <div className="absolute top-3 left-3">
-                      <span className={`px-3 py-1 rounded-full text-sm font-semibold whitespace-nowrap ${
-                        currentSlide[ex.id] === "before"
-                          ? "bg-foreground-700/80 text-background-100"
-                          : "bg-accent-500/90 text-background-50"
-                      }`}>
-                        {currentSlide[ex.id] === "before" ? "施工前" : "施工後"}
-                      </span>
-                    </div>
-                    <div className="absolute bottom-3 right-3">
-                      <span className="px-3 py-1 rounded-full bg-background-50/90 text-foreground-700 text-sm font-medium whitespace-nowrap">
-                        クリックで切替
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="p-4 md:p-5">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="px-2.5 py-0.5 rounded-full bg-primary-100 text-primary-700 text-sm font-semibold whitespace-nowrap">
-                        {ex.category}
-                      </span>
-                    </div>
-                    <h3 className="font-heading text-lg md:text-xl font-bold text-foreground-900 mb-2 leading-snug">
-                      {ex.title}
-                    </h3>
-                    <div className="flex flex-wrap items-center gap-3 text-sm text-foreground-500 mb-3">
-                      <span className="flex items-center gap-1">
-                        <i className="ri-map-pin-line text-sm"></i>
-                        {ex.location}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <i className="ri-home-4-line text-sm"></i>
-                        {ex.area}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <i className="ri-calendar-line text-sm"></i>
-                        {ex.period}
-                      </span>
-                    </div>
-                    <p className="text-base text-foreground-600 leading-relaxed mb-3 line-clamp-3">
-                      {ex.description}
-                    </p>
-                    <div className="flex flex-wrap gap-1.5 mb-4">
-                      {ex.features.map((feat) => (
-                        <span key={feat} className="px-2 py-0.5 rounded bg-secondary-100 text-secondary-800 text-sm whitespace-nowrap">
-                          {feat}
-                        </span>
-                      ))}
-                    </div>
-                    <div className="bg-background-100 rounded-lg p-3 border border-background-200/70">
-                      <div className="flex items-start gap-2">
-                        <i className="ri-double-quotes-l text-accent-400 text-base shrink-0 mt-0.5"></i>
-                        <p className="text-sm text-foreground-600 leading-relaxed italic">
-                          {ex.testimonial}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            };
-
-            return <CardWrapper key={example.id} example={example} />;
+        {/* カテゴリの絞り込み */}
+        <div role="group" aria-label="カテゴリで絞り込む" className="mt-[var(--space-xl)] flex flex-wrap gap-2">
+          {commonCategories.map((cat) => {
+            const on = activeCategory === cat;
+            return (
+              <button
+                key={cat}
+                type="button"
+                aria-pressed={on}
+                onClick={() => setActiveCategory(cat)}
+                className={`btn min-h-[44px] px-4 font-body font-medium ${
+                  on ? "bg-ink text-plate-ink" : "btn--secondary"
+                }`}
+              >
+                {cat}
+              </button>
+            );
           })}
         </div>
 
+        {/* 索引：墨の太線から始まり、行のあいだは細線 */}
+        <ul role="list" className="mt-[var(--space-lg)] border-t-bar border-ink">
+          {displayedExamples.map((ex, i) => {
+            const side = currentSlide[ex.id] ?? "after";
+
+            if (i === 0) {
+              // 先頭の一件：写真（7列）と、事実・本文（5列）
+              return (
+                <li
+                  key={ex.id}
+                  className="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-6 py-[var(--space-xl)]"
+                >
+                  <figure className="m-0 lg:col-span-7 min-w-0">
+                    <BeforeAfterPhoto
+                      example={ex}
+                      side={side}
+                      slot={`work-${ex.id}`}
+                      title={photoTitle(ex)}
+                      className="aspect-[4/3]"
+                    />
+                    <figcaption className="mt-3">
+                      <BeforeAfterToggle
+                        side={side}
+                        onChange={(s) => setSlide(ex.id, s)}
+                        label={`${ex.title}の写真を切り替え`}
+                      />
+                    </figcaption>
+                  </figure>
+                  <div className="lg:col-span-5 min-w-0 flex flex-col gap-6">
+                    <h3 className="text-section max-w-none">
+                      <WorkLink id={ex.id} onNavigate={goToDetail}>{ex.title}</WorkLink>
+                    </h3>
+                    <WorkFacts example={ex} />
+                    <p className="text-base text-ink">{ex.description}</p>
+                    <WorkFeatures features={ex.features} />
+                    <WorkTestimonial text={ex.testimonial} />
+                  </div>
+                </li>
+              );
+            }
+
+            // 二件目以降：写真（3列）・題名と本文（5列）・事実と声（4列）
+            return (
+              <li
+                key={ex.id}
+                className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-4 py-[var(--space-lg)] border-t-hair border-paper-3"
+              >
+                <figure className="m-0 md:col-span-4 lg:col-span-3 md:row-span-2 lg:row-span-1 min-w-0">
+                  <BeforeAfterPhoto
+                    example={ex}
+                    side={side}
+                    slot={`work-${ex.id}`}
+                    title={photoTitle(ex)}
+                    className="aspect-[4/3]"
+                  />
+                  <figcaption className="mt-2">
+                    <BeforeAfterToggle
+                      side={side}
+                      onChange={(s) => setSlide(ex.id, s)}
+                      label={`${ex.title}の写真を切り替え`}
+                    />
+                  </figcaption>
+                </figure>
+                <div className="md:col-span-8 lg:col-span-5 min-w-0 flex flex-col gap-3">
+                  <h3 className="text-title max-w-none">
+                    <WorkLink id={ex.id} onNavigate={goToDetail}>{ex.title}</WorkLink>
+                  </h3>
+                  <p className="text-base text-ink line-clamp-3">{ex.description}</p>
+                  <WorkFeatures features={ex.features} />
+                </div>
+                <div className="md:col-span-8 md:col-start-5 lg:col-span-4 lg:col-start-auto min-w-0 flex flex-col gap-4">
+                  <WorkFacts example={ex} />
+                  <WorkTestimonial text={ex.testimonial} />
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+
         {filteredExamples.length === 0 && (
-          <div className="text-center py-16">
-            <div className="w-16 h-16 flex items-center justify-center bg-background-50 rounded-full mx-auto mb-4 border border-background-200/70">
-              <i className="ri-image-line text-foreground-400 text-2xl"></i>
-            </div>
-            <p className="text-foreground-500 text-base">
-              該当する施工事例がまだありません。
-            </p>
-          </div>
+          <p className="py-[var(--space-2xl)] text-base text-ink-2">
+            該当する施工事例がまだありません。
+          </p>
         )}
 
         {hasMore && (
-          <div className="text-center mt-8 md:mt-10">
+          <div className="pt-[var(--space-lg)] border-t-hair border-paper-3">
             <button
+              type="button"
               onClick={() => setVisibleCount((prev) => prev + 6)}
-              className="px-8 py-3 rounded-full bg-background-50 text-foreground-700 border border-background-300/60 text-base font-semibold hover:bg-primary-50 hover:text-primary-700 hover:border-primary-300 transition-all duration-200 whitespace-nowrap cursor-pointer"
+              className="btn btn--secondary"
             >
               もっと見る
-              <i className="ri-arrow-down-s-line ml-1 align-middle"></i>
             </button>
           </div>
         )}

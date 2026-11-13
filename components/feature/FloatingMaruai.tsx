@@ -210,12 +210,12 @@ export function FloatingMaruai() {
                   animate={{ opacity: 1, x: 0, scale: 1 }}
                   exit={{ opacity: 0, x: -10, scale: 0.95 }}
                   transition={{ duration: 0.35, ease: "easeOut" }}
-                  className="relative rounded-xl px-2 py-1.5 md:px-4 md:py-3 bg-background-50 border border-background-200/70 max-w-[110px] md:max-w-[240px] lg:max-w-[280px] shadow-sm"
+                  className="relative rounded-xl px-2 py-1.5 md:px-4 md:py-3 bg-plate border border-ink max-w-[110px] md:max-w-[240px] lg:max-w-[280px] shadow-sm"
                 >
-                  <p className="text-[10px] leading-snug md:text-sm lg:text-base text-foreground-800 font-medium">
+                  <p className="text-[10px] leading-snug md:text-sm lg:text-base text-ink font-medium">
                     {displayData.comment}
                   </p>
-                  <div className="absolute bottom-4 right-[-6px] w-3 h-3 rotate-45 bg-background-50 border-r-0 border-t-0 border border-background-200/70" />
+                  <div className="absolute bottom-4 right-[-6px] w-3 h-3 rotate-45 bg-plate border-r-0 border-t-0 border border-ink" />
                 </motion.div>
               )}
             </AnimatePresence>
