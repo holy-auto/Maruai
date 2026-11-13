@@ -18,6 +18,17 @@ const CORP: [string, React.ReactNode][] = [
   ['所属', '一般社団法人 全国優良リフォーム 会員'],
 ];
 
+// 代表の写真。用意できたら public/images/ に置いてパスを入れると、プロフィール枠の代わりに写真を表示する。
+// 例: const REP_PHOTO: string | null = '/images/representative.jpg';
+const REP_PHOTO: string | null = null;
+
+// 写真がない間に表示する、代表の約束ごと（旧公式サイトに記載の内容）
+const REP_POINTS = [
+  { icon: 'ri-team-line', text: '営業・下請けのいない完全自社施工' },
+  { icon: 'ri-user-star-line', text: 'ご相談からアフターフォローまで代表が担当' },
+  { icon: 'ri-map-pin-time-line', text: 'すぐ駆けつけられる60分圏内に限定して施工' },
+];
+
 export default function CompanyPage() {
   return (
     <main className="relative">
@@ -29,7 +40,35 @@ export default function CompanyPage() {
 
       <section className="w-full py-14 md:py-20 bg-foreground-900 text-background-100">
         <div className="w-full px-4 md:px-6 lg:px-8 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-          <div className="h-64 md:h-80 rounded-xl bg-foreground-800 flex items-center justify-center text-background-400 text-sm">［ 代表・小林力也の写真 ］</div>
+          {REP_PHOTO ? (
+            <img
+              src={REP_PHOTO}
+              alt="株式会社 丸愛装業 代表取締役 小林 力也"
+              className="w-full h-72 md:h-96 rounded-xl object-cover"
+            />
+          ) : (
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary-700 to-primary-900 p-7 md:p-9 ring-1 ring-background-50/10">
+              <i
+                className="ri-double-quotes-l absolute -right-2 -top-6 text-[10rem] leading-none text-background-50/10"
+                aria-hidden="true"
+              ></i>
+              <div className="relative">
+                <span className="text-accent-300 text-sm font-semibold tracking-widest uppercase">Representative</span>
+                <p className="mt-2 text-base text-background-200">代表取締役</p>
+                <p className="font-heading text-3xl md:text-4xl font-bold text-background-50 tracking-wide">小林 力也</p>
+                <ul className="mt-6 pt-6 border-t border-background-50/15 space-y-3">
+                  {REP_POINTS.map((p) => (
+                    <li key={p.text} className="flex items-start gap-3 text-base text-background-100">
+                      <span className="w-8 h-8 shrink-0 flex items-center justify-center rounded-full bg-background-50/15 text-accent-300">
+                        <i className={p.icon} aria-hidden="true"></i>
+                      </span>
+                      <span className="pt-1 leading-relaxed">{p.text}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
           <div>
             <span className="inline-block text-accent-400 text-base font-semibold tracking-widest uppercase mb-3">代表挨拶</span>
             <p className="font-heading text-2xl md:text-3xl font-bold leading-relaxed text-background-50 mb-5">
