@@ -1,0 +1,30 @@
+:root {
+  color-scheme: light;
+  --space-3xs: 2px; --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px; --space-xl: 40px; --space-2xl: 64px; --space-3xl: 96px; --space-4xl: 144px;
+  --text-xs: 0.8125rem; --text-sm: 0.875rem; --text-md: 1rem; --text-lg: 1.25rem; --text-xl: 1.5625rem; --text-2xl: 1.953rem; --text-3xl: 2.441rem;
+  --text-display-s: clamp(2.25rem, 4vw + 0.5rem, 3.75rem); --text-display: clamp(2.75rem, 5vw + 1rem, 5.25rem);
+  --text-section: clamp(2rem, 2.5vw + 1rem, 3.5rem); --text-title: clamp(1.25rem, 0.75vw + 0.875rem, 1.625rem); --text-lead: clamp(1.125rem, 0.35vw + 1rem, 1.375rem);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); --ease-in: cubic-bezier(0.7, 0, 0.84, 0); --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms; --dur-short: 220ms; --dur-long: 420ms;
+  --color-error: oklch(52% 0.19 27); --color-success: oklch(50% 0.12 150);
+  --container: 1440px; --gutter: 64px; --gap-columns: 32px; --section-gap-s: 120px; --section-gap: 144px; --section-gap-l: 176px;
+  --z-base: 1; --z-raised: 10; --z-dropdown: 100; --z-sticky: 200; --z-sticky-nav: 300; --z-modal: 400; --z-toast: 500; --z-tooltip: 600;
+  --color-paper: oklch(99.6% 0.002 85); --color-paper-2: oklch(96.6% 0.008 80); --color-paper-3: oklch(89.5% 0.01 80);
+  --color-plate: oklch(100% 0 0); --color-plate-ink: oklch(97.5% 0.004 85);
+  --color-ink: oklch(26% 0.035 255); --color-ink-2: oklch(40% 0.025 255); --color-muted: oklch(50% 0.02 255);
+  --color-rule: oklch(89.5% 0.01 80);
+  --color-accent: oklch(54% 0.15 35); --color-accent-ink: oklch(100% 0 0); --color-focus: oklch(45% 0.14 35);
+  --color-accent-deep: oklch(45% 0.14 35);
+  /* 金茶：職人の印のような細い差し色（区切り線・番号） */
+  --color-gold: oklch(68% 0.09 75);
+  --texture-opacity: 0;
+  /* 見出しと数字は明朝（しっぽり明朝 B1）で職人の手仕事を、本文は Zen Kaku Gothic New で読みやすく。
+     英字の小見出しは本文書体を字間広めで（next/font が --font-mincho / --font-zen を注入） */
+  --font-display: var(--font-mincho), "Hiragino Mincho ProN", "Yu Mincho", serif; --font-body: var(--font-zen), ui-sans-serif, sans-serif;
+  --font-outlier: var(--font-mincho), "Hiragino Mincho ProN", "Yu Mincho", serif;
+  /* LINE の公式色（プラットフォームのブランド色。LINE ボタンのアイコンにだけ使う） */
+  --color-line: oklch(70% 0.2 145);
+  --radius-card: 6px; --radius-control: 4px; --radius-pill: 999px; --rule-hair: 1px; --rule-bar: 1px;
+  --shadow-card: 0 18px 40px -20px color-mix(in oklab, var(--color-ink) 35%, transparent), 0 2px 6px -2px color-mix(in oklab, var(--color-ink) 12%, transparent);
+  --tracking-display: 0.02em; --display-weight: 700;
+}

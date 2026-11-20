@@ -1,15 +1,15 @@
 import type { MetadataRoute } from 'next';
-import { getCities, getAllWorkIds, getPostSlugs } from '@/lib/content';
+import { getCities, getPostSlugs, getAllWorkIds } from '@/lib/content';
 import { SITE } from '@/lib/seo';
 import { SERVICE_LIST } from '@/lib/services';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const staticPaths = ['', '/services', '/works', '/price', '/voice', '/company', '/faq', '/contact', '/blog'];
+  const staticPaths = ['', '/services', '/works', '/price', '/voice', '/company', '/faq', '/contact', '/blog', '/privacy'];
 
-  const [cities, workIds, postSlugs] = await Promise.all([
+  const [cities, postSlugs, workIds] = await Promise.all([
     getCities().catch(() => []),
-    getAllWorkIds().catch(() => []),
     getPostSlugs().catch(() => []),
+    getAllWorkIds().catch(() => []),
   ]);
 
   return [

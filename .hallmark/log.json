@@ -1,0 +1,48 @@
+[
+ {
+  "date": "2026-11-13",
+  "mode": "redesign",
+  "depth": "full",
+  "scope": "site",
+  "prompt": "AI感を消してほしい",
+  "genre": "editorial",
+  "theme": "formwork",
+  "shape": "Conversational FAQ",
+  "draw": "ca3a40",
+  "hero": "Ledge",
+  "nav": "masthead",
+  "footer": "letter close",
+  "entry": "Ledge",
+  "job": "hire",
+  "axes": "mid/display-condensed/warm",
+  "face": "Oswald + Zen Kaku Gothic New",
+  "hue": 38,
+  "posture": "restrained",
+  "imagery": "photographs 1 (client, mono)",
+  "fingerprint": "formwork·ledge·masthead·letter-close·rows/table/plates/statement/form",
+  "sections": [
+   "hero",
+   "service",
+   "area",
+   "moneyflow",
+   "simulation",
+   "reason",
+   "message",
+   "contact"
+  ],
+  "signature": "where 100万円 goes, cast as two plates",
+  "material": "photo",
+  "photos": [],
+  "seed": "local-house-painting-contractor-ad91·675a8fa6·2026-11-13·r0",
+  "before": {
+   "fail": 136,
+   "reflex": 35
+  },
+  "after": {
+   "fail": 1,
+   "reflex": 0
+  },
+  "heroReview": "fix · 5 findings · 4 resolved 1 partial",
+  "finishReview": "fix · 7 findings · 7 resolved"
+ }
+]
